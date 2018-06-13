@@ -1,10 +1,11 @@
-import React from 'react'
 import { Actions, ScreenState } from './Actions'
+
 //обязательно должны быть состояния по умолчанию
 const defaultState = {
     screenState: ScreenState.CONTENT,
     PointsInfo: null
 }
+
 //сам редьюсер
 export const reducer = (prevState = defaultState, action) => {
     switch (action.type) {
@@ -15,14 +16,14 @@ export const reducer = (prevState = defaultState, action) => {
                 PointsInfo: null
             }
         }
-//в случае успеха
+        //в случае успеха
         case Actions.REQUEST_POINTS_SUCCESS: {
             return {
                 screenState: ScreenState.CONTENT,
                 PointsInfo: action.payload.PointsInfo
             }
         }
-//в случае неудпчи
+        //в случае неудпчи
         case Actions.REQUEST_POINTS_FAIL: {
             return {
                 ...prevState,

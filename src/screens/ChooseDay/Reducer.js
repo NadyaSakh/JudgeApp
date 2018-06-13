@@ -1,4 +1,3 @@
-import React from 'react'
 import { Actions, ScreenState } from './Actions'
 //обязательно должны быть состояния по умолчанию
 const defaultState = {
@@ -15,14 +14,14 @@ export const reducer = (prevState = defaultState, action) => {
                 DaysInfo: null
             }
         }
-//в случае успеха
+        //в случае успеха
         case Actions.REQUEST_DAYS_SUCCESS: {
             return {
                 screenState: ScreenState.CONTENT,
                 DaysInfo: action.payload.DaysInfo
             }
         }
-//в случае неудпчи
+        //в случае неудпчи
         case Actions.REQUEST_DAYS_FAIL: {
             return {
                 ...prevState,

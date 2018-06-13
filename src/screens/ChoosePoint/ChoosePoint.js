@@ -5,45 +5,54 @@ import {
     ActivityIndicator,
     Alert,
     StyleSheet,
-    FlatList, TouchableHighlight
+    FlatList,
+    TouchableHighlight,
+    Button
 } from 'react-native'
-import {requestPointsAction, storePoint, ScreenState, synchronization, resetPoint} from './Actions'
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
+
+import {
+    storePoint,
+    ScreenState,
+    synchronization,
+    resetPoint
+} from './Actions'
 
 export const mapStateToProps = state => ({
     screenState: state.reducer.screenState,
     PointsInfo: state.reducer.PointsInfo
 })
+
 export const mapDispatchToProps = dispatch => ({
-    onClick: pointName =>
-        dispatch(storePoint(pointName)),
-    changePoint: pointName =>
-        dispatch(resetPoint(pointName)),
-    synchronization: () =>
-        dispatch(synchronization())
-
-
+    onClick: pointName => dispatch(storePoint(pointName)),
+    changePoint: pointName => dispatch(resetPoint(pointName)),
+    synchronization: () => dispatch(synchronization())
 })
 
-export class ChoosePoint extends React.Component{
+export class ChoosePoint extends React.Component {
+
+    static propTypes = {
+        screenState: PropTypes.string.isRequired
+
+    }
     state = {
         pointsList: '',
         competitionName: '',
-        dayNumber:''
+        dayNumber: ''
     }
 
-// данные по пунктам были загружены на предыдущем экране
+    // данные по пунктам были загружены на предыдущем экране
 
-//обязательно если используем Пропсы
-    componentWillReceiveProps = nextProps => {
-        if (nextProps.screenState === ScreenState.ERROR) {//
-            Alert.alert('Ошибка', 'Список соревнований не загружен.')
-        }
-    }
+    //обязательно если используем Пропсы
+    // componentWillReceiveProps = nextProps => {
+    //     if (nextProps.screenState === ScreenState.ERROR) {//
+    //         Alert.alert('Ошибка', 'Список соревнований не загружен.')
+    //     }
+    // }
 
     render = () =>
         <View style={styles.container}>
-            <Text style={styles.sectionHeader}>Гонка"{this.state.competitionName}"</Text>
+            <Text style={styles.sectionHeader}>Гонка'{this.state.competitionName}'</Text>
             <Text>Сегодня {this.state.dayNumber}</Text>
             <Text style={styles.sectionHeader}>Выберите свой пункт:</Text>
             {this.renderScreenState(this.props.screenState)}
@@ -52,7 +61,7 @@ export class ChoosePoint extends React.Component{
     renderScreenState = screenState => {
         switch (screenState) {
             case ScreenState.LOADING: {
-                return(
+                return (
                     <View style={styles.container}>
                         <ActivityIndicator/>
                     </View>
@@ -72,16 +81,15 @@ export class ChoosePoint extends React.Component{
                                 {key: 'Заправка'},
                                 {key: 'Пункт отдыха'},
                                 {key: 'В поле'},
-                                {key: 'Перекресток'},
+                                {key: 'Перекресток'}
                             ]}
-                            renderItem={({item}) =>(
+                            renderItem={({item}) => (
                                 <TouchableHighlight
-                                    // onPress={() => {
-                                    //     this.props.onClick(item.key)
-                                    //     console.log(item.key)
-                                    // }}
-                                <Text style={styles.item}>{item.key}</Text>
-                                </>
+                                    onPress={() => {
+                                        // this.props.onClick(item.key)
+                                    }}>
+                                    <Text style={styles.item}>{item.key}</Text>
+                                </TouchableHighlight>
                             )}
                             keyExtractor={(item, index) => index}
                         />
@@ -99,7 +107,7 @@ export class ChoosePoint extends React.Component{
                             }}
                             title='Синхронизация'
                         />
-                    </View>);
+                    </View>)
             }
         }
     }
@@ -117,13 +125,13 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         fontSize: 18,
         fontWeight: 'bold',
-        backgroundColor: 'rgba(247,247,247,1.0)',
+        backgroundColor: 'rgba(247,247,247,1.0)'
     },
     item: {
         padding: 10,
         fontSize: 16,
-        height: 44,
-    },
+        height: 44
+    }
 })
 
 //Не работает коннект

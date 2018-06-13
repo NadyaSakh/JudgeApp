@@ -3,44 +3,53 @@ import {
     View,
     Text,
     ActivityIndicator,
-    Alert,
     StyleSheet,
-    FlatList, TouchableHighlight
+    FlatList,
+    TouchableHighlight
 } from 'react-native'
-import {requestCompetitionAction, ScreenState} from './Actions'
-import {requestDaysAction} from "../ChooseDay/Actions";
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+
+import {ScreenState} from './Actions'
+import {requestDaysAction} from '../ChooseDay/Actions'
+
 
 export const mapStateToProps = state => ({
     screenState: state.reducer.screenState,
-    CompetitionInfo: state.reducer.CompetitionInfo
+    competitionInfo: state.reducer.competitionInfo
 })
+
 export const mapDispatchToProps = dispatch => ({
     // requestCompetitionList: () => dispatch(requestCompetitionAction()),
     onClick: competitionName =>
         dispatch(requestDaysAction(competitionName)),
-        // надо передать аргумент - название сорвенования на другой экран
-        // и перейти на следующий экран:::
+    // надо передать аргумент - название сорвенования на другой экран
+    // и перейти на следующий экран:::
 
 
 })
 
-export class ChooseCompetition extends React.Component{
+export class ChooseCompetition extends React.Component {
+
+    static propTypes = {
+        screenState: PropTypes.string.isRequired
+
+    }
     state = {
         competitionList: ''
     }
 
-//сначала получаем данные
-//     componentDidMount(){
-//         requestCompetitionAction()
-//     }
+    //сначала получаем данные
+    //     componentDidMount(){
+    //         requestCompetitionAction()
+    //     }
 
-//обязательно если используем Пропсы
-//     componentWillReceiveProps = nextProps => {
-//         if (nextProps.screenState === ScreenState.ERROR) {//
-//             Alert.alert('Ошибка', 'Список соревнований не загружен.')
-//         }
-//     }
+    //обязательно если используем Пропсы
+    //     componentWillReceiveProps = nextProps => {
+    //         if (nextProps.screenState === ScreenState.ERROR) {//
+    //             Alert.alert('Ошибка', 'Список соревнований не загружен.')
+    //         }
+    //     }
 
     render = () =>
         <View style={styles.container}>
@@ -51,7 +60,7 @@ export class ChooseCompetition extends React.Component{
     renderScreenState = screenState => {
         switch (screenState) {
             case ScreenState.LOADING: {
-                return(
+                return (
                     <View style={styles.container}>
                         <ActivityIndicator/>
                     </View>
@@ -73,18 +82,17 @@ export class ChooseCompetition extends React.Component{
                                 {key: 'Enduro август 2018'},
                                 {key: 'Enduro Жара 2018'},
                             ]}
-                            renderItem={({item}) =>(
+                            renderItem={({item}) => (
                                 <TouchableHighlight
                                     onPress={() => {
                                         // this.props.onClick(item.key)
-                                        console.log(item.key)
                                     }}>
-                                <Text style={styles.item}>{item.key}</Text>
+                                    <Text style={styles.item}>{item.key}</Text>
                                 </TouchableHighlight>
-                                )}
-                             keyExtractor={(item, index) => index}
+                            )}
+                            keyExtractor={(item, index) => index}
                         />
-                    </View>);
+                    </View>)
             }
         }
     }

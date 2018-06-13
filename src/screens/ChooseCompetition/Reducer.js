@@ -1,10 +1,11 @@
-import React from 'react'
 import { Actions, ScreenState } from './Actions'
+
 //обязательно должны быть состояния по умолчанию
 const defaultState = {
     screenState: ScreenState.CONTENT,
-    CompetitionInfo: null
+    competitionInfo: null
 }
+
 //сам редьюсер
 export const reducer = (prevState = defaultState, action) => {
     switch (action.type) {
@@ -12,17 +13,17 @@ export const reducer = (prevState = defaultState, action) => {
         case Actions.REQUEST_COMPETITION: {
             return {
                 screenState: ScreenState.LOADING,
-                CompetitionInfo: null
+                competitionInfo: null
             }
         }
-//в случае успеха
+        //в случае успеха
         case Actions.REQUEST_COMPETITION_SUCCESS: {
             return {
                 screenState: ScreenState.CONTENT,
-                CompetitionInfo: action.payload.CompetitionInfo
+                competitionInfo: action.payload.competitionInfo
             }
         }
-//в случае неудпчи
+        //в случае неудпчи
         case Actions.REQUEST_COMPETITION_FAIL: {
             return {
                 ...prevState,

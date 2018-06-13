@@ -1,6 +1,5 @@
-import React from 'react'
 import {Observable} from 'rxjs'
-import {ajax} from 'rxjs/observable/dom/ajax';
+import {ajax} from '../../../node_modules/rxjs/observable/dom/ajax'
 
 // const API_KEY = ''//ключ апи
 
@@ -28,7 +27,6 @@ export const requestDaysEpic = action$ =>//эпик, выделить поток
         .mergeMap(action =>
             ajax.getJSON(`http://api.openweathermap.org/data/2.5/weather?q=${action.payload.competitionName}&appid=${API_KEY}`)// Подставить нужный адрес
                 .map(response => {
-                    console.log(response)
                     if (response) {
                         return requestDaysSuccess({
                             temp: response.main.temp//Подставить нужный раздел JSON
@@ -39,7 +37,7 @@ export const requestDaysEpic = action$ =>//эпик, выделить поток
                     }
                 })
                 .catch(error => {
-                    console.log(error)
+                    LOG(error, 'requestDaysEpic')
                     return Observable.of(requestDaysFail())
                 })
         )
@@ -54,7 +52,6 @@ const requestDaysSuccess = (DaysInfo) => ({//функция на случай в
 const requestDaysFail = () => ({//функция на случай неудачи
     type: Actions.REQUEST_DAYS_FAIL,
     payload: {
-        error: "Дни не загружены"
+        error: 'Дни не загружены'
     }
-
 })

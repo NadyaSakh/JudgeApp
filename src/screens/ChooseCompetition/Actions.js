@@ -1,6 +1,6 @@
-import React from 'react'
 import {Observable} from 'rxjs'
-import {ajax} from 'rxjs/observable/dom/ajax';
+import {ajax} from 'rxjs/observable/dom/ajax'
+import {LOG} from '../../utils/logger'
 
 // const API_KEY = ''//ключ апи
 
@@ -28,7 +28,7 @@ export const requestCompetitionEpic = action$ =>//эпик, выделить п�
         .mergeMap(action =>
             ajax.getJSON(`http://api.openweathermap.org/data/2.5/weather?q=${action.payload.competitionList}&appid=${API_KEY}`)// Подставить нужный адрес
                 .map(response => {
-                    console.log(response)
+
                     if (response) {
                         return requestCompetitionSuccess({
                             temp: response.main.temp//Подставить нужный раздел JSON
@@ -39,22 +39,22 @@ export const requestCompetitionEpic = action$ =>//эпик, выделить п�
                     }
                 })
                 .catch(error => {
-                    console.log(error)
+                    LOG(error, 'requestCompetitionEpic')
                     return Observable.of(requestCompetitionFail())
                 })
         )
 
-const requestCompetitionSuccess = (CompetitionInfo) => ({//функция на случай все удачно, получаем JSON?
+const requestCompetitionSuccess = (competitionInfo) => ({//функция на случай все удачно, получаем JSON?
     type: Actions.REQUEST_COMPETITION_SUCCESS,
     payload: {
-        CompetitionInfo
+        competitionInfo: competitionInfo
     }
 })
 
 const requestCompetitionFail = () => ({//функция на случай неудачи
     type: Actions.REQUEST_COMPETITION_FAIL,
     payload: {
-        error: "Соревнования не загружены"
+        error: 'Соревнования не загружены'
     }
 
 })

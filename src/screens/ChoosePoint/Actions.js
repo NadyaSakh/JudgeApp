@@ -1,6 +1,5 @@
-import React from 'react'
 import {Observable} from 'rxjs'
-import {ajax} from 'rxjs/observable/dom/ajax';
+import {ajax} from 'rxjs/observable/dom/ajax'
 
 // const API_KEY = ''//ключ апи
 
@@ -21,11 +20,11 @@ export const synchronization = () => ({//Синхронизация данных
 })
 
 export const resetPoint = (pointName) =>({//поменять выбранный пункт на другой
-
+    pointName
 })
 
 export const storePoint = (pointName) => ({//сохранить название пункта в локальной БД
-
+    pointName
 })
 
 export const requestPointsAction = (dayNumber) => ({//функция запросить список соревнований
@@ -40,7 +39,6 @@ export const requestPointsEpic = action$ =>//эпик, выделить пото
         .mergeMap(action =>
             ajax.getJSON(`http://api.openweathermap.org/data/2.5/weather?q=${action.payload.dayNumber}&appid=${API_KEY}`)// Подставить нужный адрес
                 .map(response => {
-                    console.log(response)
                     if (response) {
                         return requestPointsSuccess({
                             temp: response.main.temp//Подставить нужный раздел JSON
@@ -51,7 +49,7 @@ export const requestPointsEpic = action$ =>//эпик, выделить пото
                     }
                 })
                 .catch(error => {
-                    console.log(error)
+                    LOG(error)
                     return Observable.of(requestPointsFail())
                 })
         )
@@ -66,7 +64,7 @@ const requestPointsSuccess = (PointsInfo) => ({//функция на случа�
 const requestPointsFail = () => ({//функция на случай неудачи
     type: Actions.REQUEST_POINTS_FAIL,
     payload: {
-        error: "Пункты не загружены"
+        error: 'Пункты не загружены'
     }
 
 })

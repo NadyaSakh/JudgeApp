@@ -5,11 +5,13 @@ import {
     ActivityIndicator,
     Alert,
     StyleSheet,
-    FlatList
+    FlatList,
+    TouchableHighlight
 } from 'react-native'
-import {requestDaysAction, ScreenState} from './Actions'
-import {connect} from 'react-redux';
-import {requestPointsAction} from "../ChoosePoint/Actions";
+import {connect} from 'react-redux'
+
+import {ScreenState} from './Actions'
+import {requestPointsAction} from '../ChoosePoint/Actions'
 
 export const mapStateToProps = state => ({
     screenState: state.reducer.screenState,
@@ -23,17 +25,22 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 export class ChooseDay extends React.Component{
+
+    static propTypes = {
+        screenState: PropTypes.string.isRequired
+
+    }
     state = {
         daysList: ''
     }
     //Дни были получены на предыдущем экране
 
-//обязательно если используем Пропсы
-    componentWillReceiveProps = nextProps => {
-        if (nextProps.screenState === ScreenState.ERROR) {//
-            Alert.alert('Ошибка', 'Список соревнований не загружен.')
-        }
-    }
+    //обязательно если используем Пропсы
+    // componentWillReceiveProps = nextProps => {
+    //     if (nextProps.screenState === ScreenState.ERROR) {//
+    //         Alert.alert('Ошибка', 'Список соревнований не загружен.')
+    //     }
+    // }
 
     render = () =>
         <View style={styles.container}>
@@ -63,16 +70,15 @@ export class ChooseDay extends React.Component{
                             ]}
                             renderItem={({item}) =>(
                                 <TouchableHighlight
-                                    // onPress={() => {
-                                    //     this.props.onClick(item.key)
-                                    //     console.log(item.key)
-                                    // }}
-                                <Text style={styles.item}>{item.key}</Text>
-                                </>
+                                    onPress={() => {
+                                        // this.props.onClick(item.key)
+                                    }}>
+                                    <Text style={styles.item}>{item.key}</Text>
+                                </TouchableHighlight>
                             )}
                             keyExtractor={(item, index) => index}
                         />
-                    </View>);
+                    </View>)
             }
         }
     }
