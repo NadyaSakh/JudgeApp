@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import {store} from './Store'
 import {ChooseCompetition} from './screens/ChooseCompetition/ChooseCompetition'
 
-
+//yjcfhg
 //экраны
 const RootStack = StackNavigator({
     Home: {screen: ChooseCompetition},
