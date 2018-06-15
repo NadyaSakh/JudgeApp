@@ -1,28 +1,28 @@
-import { Actions, ScreenState } from './Actions'
-//обязательно должны быть состояния по умолчанию
+import { Actions } from './Actions'
+import { ScreenState } from '../../Components/ScreenState'
+
 const defaultState = {
     screenState: ScreenState.CONTENT,
-    DaysInfo: null
+    competitionInfo: null
 }
-//сам редьюсер
+
 export const reducer = (prevState = defaultState, action) => {
     switch (action.type) {
-        //только пошёл запрос
-        case Actions.REQUEST_DAYS: {
+        case Actions.REQUEST_COMPETITION: {
             return {
                 screenState: ScreenState.LOADING,
-                DaysInfo: null
+                competitionInfo: null
             }
         }
-        //в случае успеха
-        case Actions.REQUEST_DAYS_SUCCESS: {
+
+        case Actions.REQUEST_COMPETITION_SUCCESS: {
             return {
                 screenState: ScreenState.CONTENT,
-                DaysInfo: action.payload.DaysInfo
+                competitionInfo: action.payload.competitionInfo
             }
         }
-        //в случае неудпчи
-        case Actions.REQUEST_DAYS_FAIL: {
+
+        case Actions.REQUEST_COMPETITION_FAIL: {
             return {
                 ...prevState,
                 screenState: ScreenState.ERROR

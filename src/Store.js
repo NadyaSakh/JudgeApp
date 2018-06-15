@@ -1,25 +1,20 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 
-import { reducer } from './screens/ChooseCompetition/Reducer'
+import { reducer } from './Screens/ChooseCompetition/Reducer'
 import { logger } from 'redux-logger'
-import { requestCompetitionEpic} from './screens/ChooseCompetition/Actions'
+import { requestCompetitionEpic } from './Screens/ChooseCompetition/Actions'
 
-
-//проинициализировали редьюсер
 export const rootReducer = combineReducers({
     reducer
 })
 
-//проинициализировали эпик
 export const rootEpic = combineEpics(
     requestCompetitionEpic
 )
 
-//мидалвары эпика
 export const epicMiddleware = createEpicMiddleware(rootEpic)
 
-//делаем хранилище
 export const store = createStore(
     rootReducer,
     applyMiddleware(logger),
