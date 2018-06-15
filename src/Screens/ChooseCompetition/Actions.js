@@ -1,29 +1,22 @@
 import {Observable} from 'rxjs'
 import {ajax} from 'rxjs/observable/dom/ajax'
-import {LOG} from '../../utils/logger'
+import { LOG } from '../../Utils/logger'
 
-// const API_KEY = ''//ключ апи
 
-export const ScreenState = {//состояния экрана
-    LOADING: 'LOADING',
-    CONTENT: 'CONTENT',
-    ERROR: 'ERROR'
-}
-
-export const Actions = {//статус запроса
+export const Actions = {
     REQUEST_COMPETITION: 'REQUEST_COMPETITION',
     REQUEST_COMPETITION_SUCCESS: 'REQUEST_COMPETITION_SUCCESS',
     REQUEST_COMPETITION_FAIL: 'REQUEST_COMPETITION_FAIL',
 }
 
-export const requestCompetitionAction = () => ({//функция запросить список соревнований
+export const requestCompetitionAction = () => ({
     type: Actions.REQUEST_COMPETITION,
-    payload: {//полезная нагрузка
+    payload: {
         competitionList: 'competitionList'
     }
 })
 
-export const requestCompetitionEpic = action$ =>//эпик, выделить поток, получить данные
+export const requestCompetitionEpic = action$ =>
     action$.ofType(Actions.REQUEST_COMPETITION)
         .mergeMap(action =>
             ajax.getJSON(`http://api.openweathermap.org/data/2.5/weather?q=${action.payload.competitionList}&appid=${API_KEY}`)// Подставить нужный адрес
@@ -44,17 +37,19 @@ export const requestCompetitionEpic = action$ =>//эпик, выделить п�
                 })
         )
 
-const requestCompetitionSuccess = (competitionInfo) => ({//функция на случай все удачно, получаем JSON?
+const requestCompetitionSuccess = (competitionInfo) => ({
     type: Actions.REQUEST_COMPETITION_SUCCESS,
     payload: {
         competitionInfo: competitionInfo
     }
 })
 
-const requestCompetitionFail = () => ({//функция на случай неудачи
+const requestCompetitionFail = () => ({
     type: Actions.REQUEST_COMPETITION_FAIL,
     payload: {
         error: 'Соревнования не загружены'
     }
 
 })
+
+export const onCompetitionPress = () => ({})

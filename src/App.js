@@ -3,20 +3,15 @@ import { StackNavigator } from 'react-navigation'
 import { Provider } from 'react-redux'
 
 import {store} from './Store'
-import {ChooseCompetition} from './screens/ChooseCompetition/ChooseCompetition'
+import ChooseCompetition from './Screens/ChooseCompetition'
 
-
-//экраны
 const RootStack = StackNavigator({
     Home: {screen: ChooseCompetition},
 })
 
 export class App extends React.Component {
-    render = () =>//какой экран рисовать
+    render = () =>
         <Provider store={store}>
             <RootStack/>
         </Provider>
 }
-
-
-
