@@ -1,35 +1,20 @@
 import React from 'react'
 import {
     View,
-    Text,
-    ActivityIndicator,
     TouchableHighlight,
     FlatList,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { ScreenState } from '../../Components/ScreenState'
+import { LoadingIndicator } from '../../Components/LoadingIndicator'
+import { SingleLineText } from '../../Components/SingleLineText'
+import { ScreenError } from '../../Components/ScreenError'
+import { LOG } from '../../Utils/logger'
 
-
-export const LoadingIndicator = (props) => {
-    LoadingIndicator.propTypes = {
-        style: PropTypes.oneOfType(PropTypes.object, PropTypes.number)
-    }
-    return <View style={props.style}>
-        <ActivityIndicator/>
-    </View>
-}
-
-export const SingleLineText = (props) => {
-    SingleLineText.propTypes = {
-        style: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
-        text: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
-    }
-    return <Text style={props.style}>{props.text}</Text>
-}
-
-export const CompetitionItem = (props) => {
+export const CompetitionItem = props => {
     CompetitionItem.propTypes = {
         onPress: PropTypes.func,
         style: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
@@ -47,29 +32,36 @@ export const CompetitionItem = (props) => {
     </TouchableHighlight>
 }
 
-export const CompetitionList = (props) => {
+export const CompetitionList = props => {
     CompetitionList.propTypes = {
         competitionList: PropTypes.array,
         onPress: PropTypes.func,
         style: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
         text: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
     }
-    return (<FlatList
+
+    onPress = props => {
+        onPress.propTypes = {
+            onPress: PropTypes.func
+        }
+        props.onPress()
+    }
+
+    return <FlatList
         data={props.competitionList}
         renderItem={({item}) => {
             return (
                 <CompetitionItem
-                    onPress={() =>
-                        props.onPress()}
+                    onPress={this.onPress}
                     style={props.style}
                     text={item.key}/>
             )
         }}
         keyExtractor={(item, index) => index}
-    />)
+    />
 }
 
-export const Info = (props) => {
+export const Info = props => {
     Info.propTypes = {
         styleContainer: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
         styleHeader: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
@@ -83,63 +75,78 @@ export const Info = (props) => {
     </View>
 }
 
-export const screenError = (props) => {
-    screenError.propTypes = {
-        screenState: PropTypes.string.isRequired
-    }
-    if (props.screenState === ScreenState.ERROR)
-        return Alert.alert('Ошибка', 'Список соревнований не загружен.')
-}
-
 export class ActionContainer extends React.PureComponent {
     static propTypes = {
-        screenState: PropTypes.string.isRequired,
 
-        screenLoading: PropTypes.object,
-        singleLineText: PropTypes.object,
-        touchEffect: PropTypes.object,
-        listView: PropTypes.object,
-        headOfScreen: PropTypes.object,
-        screenError: PropTypes.func,
+        screenState: PropTypes.oneOf([
+            ScreenState.LOADING,
+            ScreenState.CONTENT,
+            ScreenState.ERROR
+        ]),
+
+        LoadingIndicator: PropTypes.object,
+        SingleLineText: PropTypes.object,
+        CompetitionList: PropTypes.object,
+        Info: PropTypes.object,
+        ScreenError: PropTypes.func,
         content: PropTypes.array,
         onCompetitionPress: PropTypes.func
 
     }
 
+    shouldComponentUpdate = nextProps =>
+        nextProps.screenState !== this.props.screenState
+
     render = () => {
+        LOG('render', 'ActionContainer')
+
         switch (this.props.screenState) {
             case ScreenState.LOADING: {
-                return <View>
-                    <Info
-                        styleContainer={styles.container}
-                        text='Выберите соревнование'
-                        styleHeader={styles.sectionHeader}
-                    />
-                    <LoadingIndicator
-                        style={styles.container}/>
-                </View>
+                return this.renderLoadingView()
             }
 
+            case ScreenState.ERROR: {
+                return this.renderErrorView()
+            }
+            //Чтобы из алерта об ошибке был переход на обычный экран
             default: {
-                return <View>
-                    <Info
-                        styleContainer={styles.container}
-                        text='Выберите соревнование'
-                        styleHeader={styles.sectionHeader}
-                    />
-                    <CompetitionList
-                        competitionList={this.props.content}
-                        onPress={() =>
-                            this.props.onCompetitionPress()
-                        }
-                        style={styles.item}
-                    />
-                </View>
+                return this.renderContentView()
             }
         }
-
     }
+
+    renderLoadingView = () =>
+        <View>
+            <Info
+                styleContainer={styles.container}
+                text='Выберите соревнование'
+                styleHeader={styles.sectionHeader}
+            />
+            <LoadingIndicator
+                style={styles.container}/>
+        </View>
+
+    renderErrorView = () =>
+        <ScreenError text='Список соревнований не загружен.'/>
+
+    renderContentView = () =>
+        <View>
+            <Info
+                styleContainer={styles.container}
+                text='Выберите соревнование'
+                styleHeader={styles.sectionHeader}
+            />
+            <CompetitionList
+                competitionList={this.props.content}
+                onPress={() =>
+                    this.props.onCompetitionPress()
+                }
+                style={styles.item}
+            />
+        </View>
 }
+
+
 
 export const styles = StyleSheet.create({
     container: {
