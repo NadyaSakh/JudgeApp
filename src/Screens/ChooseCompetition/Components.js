@@ -11,7 +11,6 @@ import PropTypes from 'prop-types'
 import { ScreenState } from '../../Components/ScreenState'
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
-import { ScreenError } from '../../Components/ScreenError'
 import { LOG } from '../../Utils/logger'
 
 export const CompetitionItem = props => {
@@ -63,35 +62,62 @@ export const CompetitionList = props => {
 
 export const Info = props => {
     Info.propTypes = {
-        styleContainer: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
         styleHeader: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
         text: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
     }
-    return <View styleContainer={props.styleContainer}>
-        <SingleLineText
+    return <SingleLineText
+        text={props.text}
+        styleHeader={props.styleHeader}
+    />
+}
+
+export const LoadingView = props => {
+    LoadingView.propTypes = {
+        styleHeader: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
+        text: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
+    }
+    return <View>
+        <Info
             text={props.text}
-            styleHeader={props.styleHeader}
+            styleHeader={styles.sectionHeader}
+        />
+        <LoadingIndicator/>
+    </View>
+}
+
+export const ContentView = props => {
+    ContentView.propTypes = {
+        styleHeader: PropTypes.oneOfType(PropTypes.object, PropTypes.number),
+        text: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+        data: PropTypes.array,
+        onCompetitionPress: PropTypes.func
+    }
+    return <View>
+        <Info
+            text={props.text}
+            styleHeader={styles.sectionHeader}
+        />
+        <CompetitionList
+            competitionList={props.data}
+            onPress={() =>
+                props.onCompetitionPress()
+            }
+            style={styles.item}
         />
     </View>
 }
 
-export class ActionContainer extends React.PureComponent {
+export class ActionContainer extends React.Component {
     static propTypes = {
-
         screenState: PropTypes.oneOf([
             ScreenState.LOADING,
             ScreenState.CONTENT,
             ScreenState.ERROR
         ]),
 
-        LoadingIndicator: PropTypes.object,
-        SingleLineText: PropTypes.object,
-        CompetitionList: PropTypes.object,
-        Info: PropTypes.object,
-        ScreenError: PropTypes.func,
-        content: PropTypes.array,
-        onCompetitionPress: PropTypes.func
-
+        loadingView: PropTypes.object,
+        contentView: PropTypes.object.isRequired,
+        errorView: PropTypes.object
     }
 
     shouldComponentUpdate = nextProps =>
@@ -108,42 +134,37 @@ export class ActionContainer extends React.PureComponent {
             case ScreenState.ERROR: {
                 return this.renderErrorView()
             }
-            //Чтобы из алерта об ошибке был переход на обычный экран
+
+            // case ScreenState.CONTENT: {
+            //     return this.renderContentView()
+            // }
             default: {
                 return this.renderContentView()
             }
         }
     }
 
-    renderLoadingView = () =>
-        <View>
-            <Info
-                styleContainer={styles.container}
-                text='Выберите соревнование'
-                styleHeader={styles.sectionHeader}
-            />
-            <LoadingIndicator
-                style={styles.container}/>
+    renderLoadingView = () => {
+        return <View style={styles.container}>
+            {this.props.loadingView}
         </View>
+    }
 
-    renderErrorView = () =>
-        <ScreenError text='Список соревнований не загружен.'/>
-
-    renderContentView = () =>
-        <View>
-            <Info
-                styleContainer={styles.container}
-                text='Выберите соревнование'
-                styleHeader={styles.sectionHeader}
-            />
-            <CompetitionList
-                competitionList={this.props.content}
-                onPress={() =>
-                    this.props.onCompetitionPress()
-                }
-                style={styles.item}
-            />
+    renderErrorView = () => {
+        return <View style={styles.container}>
+            {this.props.errorView}
         </View>
+    }
+
+    renderContentView = () => {
+        return <View style={styles.container}>
+            {
+                this.props.contentView ?
+                    this.props.contentView :
+                    Alert.alert('Внимание', 'Отсутствует элементы для отображения контента')
+            }
+        </View>
+    }
 }
 
 
