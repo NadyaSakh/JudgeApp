@@ -1,12 +1,10 @@
 import React from 'react'
 import {
     View,
-    Button,
     StyleSheet,
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import { LOG } from '../../Utils/logger'
 import { SingleLineText } from '../../Components/SingleLineText'
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 
@@ -24,30 +22,7 @@ export const LoadingView = props => {
     </View>
 }
 
-
-export const ContentView = props => {
-    ContentView.propTypes = {
-        styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-        login : PropTypes.string,
-        password: PropTypes.string
-    }
-
-    return <View style={styles.container}>
-        <Button
-            onPress={() => {
-                this.props.onClick(props.login, props.password)
-                LOG(props.login)
-            }}
-            title='Войти'/>
-    </View>
-}
-
-//Сделать глобальный стиль и стиль для контента
 export const styles = StyleSheet.create({
-    container: {
-        flex: 0,
-        // backgroundColor: 'red'
-    },
     sectionHeader: {
         paddingTop: 2,
         paddingLeft: 10,

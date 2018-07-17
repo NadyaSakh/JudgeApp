@@ -10,19 +10,17 @@ import ScanCompetition from './Screens/ScanScreen'
 import { ScreensKeys } from './ScreenKey'
 
 export const AppStack = createStackNavigator({
-    Other: ChooseCompetition,
     Scan: ScanCompetition
 })
 
 const RootStack = createSwitchNavigator(
     {
+        [ScreensKeys.INIT]: ChooseCompetition,
         [ScreensKeys.SPLASH]: SplashScreen,
         [ScreensKeys.APP]: AppStack,
         [ScreensKeys.AUTH]: AuthScreen,
     },
     {
-        // initialRouteName: ScreensKeys.APP.Other
-        // initialRouteName: ScreensKeys.AUTH
         initialRouteName: ScreensKeys.SPLASH
     }
 )

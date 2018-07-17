@@ -3,8 +3,7 @@ import { ComponentState } from '../../Components/ActionContainer'
 import { ScreensKeys } from '../../ScreenKey'
 
 const defaultState = {
-    authState: ComponentState.CONTENT,
-    dataExists: false,
+    componentState: ComponentState.CONTENT,
     navigateTo: ''
 }
 
@@ -15,12 +14,13 @@ export const authReducer = (prevState = defaultState, action) => {
                 ...prevState,
                 componentState: ComponentState.LOADING,
             }
+
         }
         case Actions.AUTHORISATION_SUCCESS: {
             return {
                 ...prevState,
                 componentState: ComponentState.CONTENT,
-                navigateTo: action.payload.dataExists ? ScreensKeys.APP : ScreensKeys.INIT
+                navigateTo: ScreensKeys.INIT
 
             }
         }

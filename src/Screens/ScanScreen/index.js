@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import {
     View,
     Text} from 'react-native'
@@ -17,7 +17,7 @@ export const mapStateToProps = state => ({
 
 export default class ScanCompetition extends React.Component {
     static propTypes = {
-        screenState: PropTypes.string.isRequired
+        // screenState: PropTypes.string.isRequired
     }
 
     componentDidMount(){

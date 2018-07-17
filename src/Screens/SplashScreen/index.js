@@ -7,9 +7,9 @@ import {
     View,
     Text
 } from 'react-native'
+import { LOG } from '../../Utils/logger'
 import PropTypes from 'prop-types'
 
-import { LOG } from '../../Utils/logger'
 import { ScreensKeys } from '../../ScreenKey'
 
 
@@ -23,57 +23,40 @@ export default class SplashScreen extends React.Component {
         this._bootstrapAsync()
     }
 
-    //Не работает отчистка данных!
-    // clearData = async () => {
-    //     try {
-    //         let keys = ['accessToken', 'refreshToken']
-    //         return await AsyncStorage.multiRemove(keys, () => {
-    //             // keys k1 & k2 removed, if they existed
-    //             LOG('Удаление данных', 'УДАЛЕНИЕ')
-    //         })
-    //     } catch (error) {
-    //         LOG(error, 'Ошибка удаления!!')
-    //     }
-    // }
-
-    _bootstrapAsync = () => {
-        //Убрать, если не нужно удалять авторизационные данные
-
+    _bootstrapAsync = async () => {
         let userToken = this.getUserToken()
         let dataExists = this.checkDataExist()
 
         let screen = ''
-
-        if (userToken && dataExists) {
-            screen = ScreensKeys.APP
-        }
-        else if (userToken && !dataExists) {
-            screen = ScreensKeys.INIT
-        }
-        else {
+        if (userToken === null) {
             screen = ScreensKeys.AUTH
+        } else if (userToken && dataExists === null) {
+            screen = ScreensKeys.INIT
+        } else {
+            screen = ScreensKeys.APP
         }
 
         this.props.navigation.navigate(screen)
     }
 
+
     getUserToken = async () => {
-        const token = await AsyncStorage.getItem('userToken')
-        LOG(token, 'user Token')
-        return token
+        await AsyncStorage.getItem('accessToken', (err, token) => {
+            return token
+        })
     }
 
     checkDataExist = async () => {
         try {
-            const dataFlag = await AsyncStorage.getItem('dataExits')
-            LOG(dataFlag, 'data Exists')
-            return dataFlag
-
+            await AsyncStorage.getItem('currentCompetition', (err, data) => {
+                return data
+            })
         } catch (error) {
             LOG(error, 'Данные не существуют!!')
             return null
         }
     }
+
     render() {
         return (
             <View style={styles.container}>

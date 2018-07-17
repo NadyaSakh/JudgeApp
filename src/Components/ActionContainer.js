@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet, View } from 'react-native'
 
-import { LOG } from '../Utils/logger'
 
 export const ComponentState = {
     LOADING: 'LOADING',
@@ -27,7 +26,6 @@ export class ActionContainer extends React.Component {
     static defaultProps = { errorVisibility : true }
 
     render = () => {
-        LOG('render', 'ActionContainer')
         switch (this.props.componentState) {
             case ComponentState.LOADING: {
                 return this.renderLoadingView()

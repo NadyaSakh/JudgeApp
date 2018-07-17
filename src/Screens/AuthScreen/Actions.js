@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/observable/dom/ajax'
 import { LOG } from '../../Utils/logger'
-import { AjaxResponse } from 'rxjs/observable/dom/AjaxObservable'
-import {AsyncStorage } from 'react-native'
+// import { AjaxResponse } from 'rxjs/observable/dom/AjaxObservable'
+import { AsyncStorage } from 'react-native'
 
 export const Actions = {
     AUTHORISATION: 'AUTHORISATION',
@@ -10,7 +10,7 @@ export const Actions = {
     AUTHORISATION_FAIL: 'AUTHORISATION_FAIL'
 }
 
-export const authorisationAction = (login, password) => ({
+export const signInAction = (login, password) => ({
     type: Actions.AUTHORISATION,
     payload: {
         login: login,
@@ -20,9 +20,8 @@ export const authorisationAction = (login, password) => ({
 
 export const authorisationEpic = action$ =>
     action$.ofType(Actions.AUTHORISATION)
-        // .mergeMap(action => {
+    // .mergeMap(action => {
         .mergeMap(() => {
-            LOG('HERE', 'RESPONSE')
             // ajax.post(url: string, body?: any, headers?: Object): Observable<AjaxResponse>
             // return ajax.post('https://my-json-server.typicode.com/NadyaSakh/Auth1/auth',
             //     {
@@ -34,20 +33,7 @@ export const authorisationEpic = action$ =>
             return ajax.getJSON('https://my-json-server.typicode.com/NadyaSakh/Auth1/auth')
                 .timeout(5000)
                 .mergeMap(response => {
-                    if (response) {
-                        LOG(response, 'SUCCESS')
-                        return Observable.fromPromise(
-                            AsyncStorage.multiSet([
-                                ['accessToken', response.accessToken],
-                                ['refreshToken', response.refreshToken]
-                            ]))
-                            .mergeMap(() => Observable.fromPromise(AsyncStorage.getItem('dataExist')))
-                            .map(dataExist => requestAuthorisationSuccess(dataExist))
-                    }
-                    else {
-                        LOG(response, 'FAIL')
-                        return requestAuthorisationFail()
-                    }
+                    requestAuthorisation(response)
                 })
                 .catch(error => {
                     LOG(error, 'AuthEpic')
@@ -55,12 +41,8 @@ export const authorisationEpic = action$ =>
                 })
         })
 
-const requestAuthorisationSuccess = (dataExists) => ({
-    type: Actions.AUTHORISATION_SUCCESS,
-    payload: {
-        dataExists
-    }
-
+const requestAuthorisationSuccess = () => ({
+    type: Actions.AUTHORISATION_SUCCESS
 })
 
 const requestAuthorisationFail = () => ({
@@ -69,3 +51,28 @@ const requestAuthorisationFail = () => ({
         error: 'Вход не осуществлён'
     }
 })
+
+const requestAuthorisation = (response) => {
+    if (response) {
+        return Observable.create(observer => {
+            AsyncStorage.multiSet([
+                ['accessToken', response.accessToken],
+                ['refreshToken', response.refreshToken]
+            ], errors => {
+
+                if (errors !== null) {
+                    observer.error(errors)
+                }
+                else {
+                    observer.next()
+                    observer.complete()
+                }
+            })
+        })
+            .map(() => requestAuthorisationSuccess())
+    }
+    else {
+        LOG(response, 'FAIL')
+        return requestAuthorisationFail()
+    }
+}

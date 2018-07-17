@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { LOG } from '../../Utils/logger'
 import { connect } from 'react-redux'
 import {
     View,
@@ -11,20 +10,20 @@ import {
 import { ActionContainer } from '../../Components/ActionContainer'
 import { LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
-import { authorisationAction } from './Actions'
+import { signInAction } from './Actions'
 
 const mapStateToProps = state => ({...state.authReducer})
 
 const mapDispatchToProps = dispatch => ({
-    onClick: (login, password) => dispatch(authorisationAction(login, password))
+    signIn: (login, password) => dispatch(signInAction(login, password))
 })
 
 
 export class AuthScreen extends React.Component {
     static propTypes = {
-        authState: PropTypes.string.isRequired,
+        componentState: PropTypes.string.isRequired,
         navigateTo: PropTypes.string,
-        onClick: PropTypes.func,
+        signIn: PropTypes.func,
         navigation: PropTypes.object
     }
 
@@ -37,7 +36,6 @@ export class AuthScreen extends React.Component {
         super(props)
         this.textInput = React.createRef()
         this.focusTextInput = this.focusTextInput.bind(this)
-        LOG(props)
     }
 
     //Для перехода на другой экран
@@ -47,16 +45,12 @@ export class AuthScreen extends React.Component {
         }
     }
 
-    componentDidMount() {
-        LOG('MOUNT_Auth', 'MOUNT')
-    }
-
     focusTextInput() {
         this.textInput.current.focus()
     }
 
     onSubmit = () => {
-        this.props.onClick(this.state.login, this.state.password)
+        this.props.signIn(this.state.login, this.state.password)
     }
 
     render = () => {
@@ -75,7 +69,7 @@ export class AuthScreen extends React.Component {
                 placeholder='Введите пароль'
                 onChangeText={(text) => this.setState({password: text})}/>
             <ActionContainer
-                componentState={this.props.authState}
+                componentState={this.props.componentState}
                 contentView={
                     <Button
                         onPress={this.onSubmit}
