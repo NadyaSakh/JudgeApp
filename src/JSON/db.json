@@ -1,0 +1,71 @@
+{
+  "currentCompetition": [{"id": 1,
+          "date": "27-06-2018",
+          "timeBegin": "14:00",
+          "timeEnd": "19:00",
+          "competitionName": "Жара-2018",
+          "daysList": [{
+          "competitionID": 1,
+          "date": "27-06-2018",
+          "timeBegin": "14:00",
+          "timeEnd": "19:00",
+          "numericalNumber": 1,
+          "dayID": 1
+        },
+        {
+          "competitionID": 1,
+          "date": "28-06-2018",
+          "timeBegin": "14:00",
+          "timeEnd": "19:00",
+          "numericalNumber": 2,
+          "dayID": 2
+        }
+      ],
+      "pointsList": [
+        {
+          "competitionID": 1,
+          "dayID": 1,
+          "name": "У горы",
+          "numericalNumber": 1
+        },
+        {
+          "competitionID": 1,
+          "dayID": 1,
+          "name": "Переезд",
+          "numericalNumber": 2
+        },
+        {
+          "competitionID": 1,
+          "dayID": 2,
+          "name": "У воды",
+          "numericalNumber": 1
+        },
+        {
+          "competitionID": 1,
+          "dayID": 2,
+          "name": "Заправка",
+          "numericalNumber": 2
+        }
+      ],
+      "participantsList": [
+        {
+          "nfc": "123asfdf24",
+          "tShirtNumber": 12,
+          "firstName": "Николай",
+          "surname": "Звонов",
+          "level": "Middle",
+          "vehicle": "motorcycle"
+        },
+        {
+          "nfc": "123as5678",
+          "tShirtNumber": 11,
+          "firstName": "Константин",
+          "surname": "Иванов",
+          "level": "Profi",
+          "vehicle": "quard bike"
+        }
+      ],
+      "partiсipantsNumber": 2
+    }
+  ]
+}
