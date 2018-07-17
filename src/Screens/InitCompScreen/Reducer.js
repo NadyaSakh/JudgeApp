@@ -1,31 +1,32 @@
 import { Actions } from './Actions'
-import { ScreenState } from '../../Components/ScreenState'
+import { ComponentState } from '../../Components/ActionContainer'
 
 const defaultState = {
-    screenState: ScreenState.CONTENT,
-    competitionInfo: null
+    screenState: ComponentState.CONTENT,
+    competitionName: null,
+    data: null
 }
 
 export const reducer = (prevState = defaultState, action) => {
     switch (action.type) {
         case Actions.REQUEST_COMPETITION: {
             return {
-                screenState: ScreenState.LOADING,
-                competitionInfo: null
+                screenState: ComponentState.LOADING,
+                competitionName: null,
+                data: null
             }
         }
-
         case Actions.REQUEST_COMPETITION_SUCCESS: {
             return {
-                screenState: ScreenState.CONTENT,
-                competitionInfo: action.payload.competitionInfo
+                screenState: ComponentState.CONTENT,
+                competitionName: action.payload.competitionName,
+                data: action.payload.data
             }
         }
-
         case Actions.REQUEST_COMPETITION_FAIL: {
             return {
                 ...prevState,
-                screenState: ScreenState.ERROR
+                screenState: ComponentState.ERROR
             }
         }
 
