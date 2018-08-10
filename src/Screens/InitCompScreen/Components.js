@@ -1,12 +1,13 @@
 import React from 'react'
 import {
     View,
-    StyleSheet,
+    StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
+import { Strings } from '../../Strings'
 
 export const Info = props => {
     Info.propTypes = {
@@ -36,17 +37,19 @@ export const LoadingView = props => {
 export const ContentView = props => {
     ContentView.propTypes = {
         styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-        text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         data: PropTypes.array,
-        name: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array])
+        name: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
+        competitionExists: PropTypes.bool
     }
 
-    return <View>
-        <Info
-            text={props.text}
-            styleHeader={styles.sectionHeader}
-        />
-    </View>
+    let screenText = props.competitionExists ?
+        Strings.CURRENT_COMPETITION_EXISTS :
+        Strings.CURRENT_COMPETITION_NOT_EXISTS
+
+    return <Info
+        text={screenText}
+        styleHeader={styles.sectionHeader}
+    />
 }
 
 
