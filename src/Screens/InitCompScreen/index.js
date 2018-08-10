@@ -7,8 +7,8 @@ import { ContentView, LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
 import { requestCompetitionAction } from './Actions'
 
-export const mapStateToProps = state => ({//...state.reducer//когда вся ифа из стора редьюсера
-    screenState: state.reducer.screenState,
+export const mapStateToProps = state => ({
+    ...state.InitScreenReducer //когда вся ифа из стора редьюсера
 })
 
 export const mapDispatchToProps = dispatch => ({
@@ -18,7 +18,9 @@ export const mapDispatchToProps = dispatch => ({
 export class CurrentCompetition extends React.Component {
     static propTypes = {
         screenState: PropTypes.string.isRequired,
-        loadCurrentCompetitionData: PropTypes.func
+        loadCurrentCompetitionData: PropTypes.func,
+        competitionExists: PropTypes.bool,
+        navigateTo: PropTypes.string
     }
 
     constructor(props) {
@@ -29,14 +31,21 @@ export class CurrentCompetition extends React.Component {
         this.props.loadCurrentCompetitionData()
     }
 
+    componentDidUpdate = prevProps => {
+        if (this.props.navigateTo !== prevProps.navigateTo) {
+            this.props.navigation.navigate(this.props.navigateTo)
+        }
+    }
+
     render = () => {
         return <ActionContainer
             componentState={this.props.screenState}
             contentView={
                 <ContentView
-                    text={'Загрузка информации выполнена.'}
+                    competitionExists={this.props.competitionExists}
                 />
             }
+
             errorView={
                 <ErrorView
                     text='Список соревнований не загружен.'

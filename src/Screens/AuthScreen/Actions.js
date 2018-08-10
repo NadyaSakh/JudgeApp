@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/observable/dom/ajax'
 import { LOG } from '../../Utils/logger'
-// import { AjaxResponse } from 'rxjs/observable/dom/AjaxObservable'
+// import {AjaxResponse} from 'rxjs/observable/dom/AjaxObservable'
 import { AsyncStorage } from 'react-native'
 
 export const Actions = {
@@ -33,7 +33,9 @@ export const authorisationEpic = action$ =>
             return ajax.getJSON('https://my-json-server.typicode.com/NadyaSakh/Auth1/auth')
                 .timeout(5000)
                 .mergeMap(response => {
-                    requestAuthorisation(response)
+                    LOG(response, 'Success')
+                    return requestAuthorisation(response)
+                        .mergeMap(() => Observable.of(requestAuthorisationSuccess()))
                 })
                 .catch(error => {
                     LOG(error, 'AuthEpic')
@@ -53,26 +55,21 @@ const requestAuthorisationFail = () => ({
 })
 
 const requestAuthorisation = (response) => {
-    if (response) {
-        return Observable.create(observer => {
-            AsyncStorage.multiSet([
-                ['accessToken', response.accessToken],
-                ['refreshToken', response.refreshToken]
-            ], errors => {
-
-                if (errors !== null) {
-                    observer.error(errors)
-                }
-                else {
-                    observer.next()
-                    observer.complete()
-                }
-            })
+    return Observable.create(observer => {
+        AsyncStorage.multiSet([
+            ['accessToken', response.accessToken],
+            ['refreshToken', response.refreshToken],
+            ['judgeID', `${response.judgeID}`],
+            ['fullName', response.fullName]
+        ], errors => {
+            if (errors !== null) {
+                observer.error(errors)
+            }
+            else {
+                LOG('xomplete', 'observer')
+                observer.next()
+                observer.complete()
+            }
         })
-            .map(() => requestAuthorisationSuccess())
-    }
-    else {
-        LOG(response, 'FAIL')
-        return requestAuthorisationFail()
-    }
+    })
 }
