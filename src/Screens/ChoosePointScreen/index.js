@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Observable } from 'rxjs'
+// import { Observable } from 'rxjs'
 import {
     AsyncStorage
     // StyleSheet,
@@ -34,7 +34,8 @@ export class ChoosePointScreen extends React.Component {
             {key: 'Переезд'},
             {key: 'Заправка'},
             {key: 'Пункт отдыха'}
-        ]
+        ],
+        compName: ''
     }
 
     constructor(props) {
@@ -72,6 +73,7 @@ export class ChoosePointScreen extends React.Component {
                     let parsedCompetition = JSON.parse(currentCompetition)
                     let compName = parsedCompetition.name
                     LOG(compName, 'Название соревнования')
+                    this.setState({compName: compName})
                     return compName
                 }
             })
@@ -79,30 +81,25 @@ export class ChoosePointScreen extends React.Component {
             LOG(error, 'Название соревнования не получено!')
             return null
         }
-
-        //Всегда ли, обращаясь в базу, нужно использовать Обсервэбл?
-        // return Observable.create(observer => {
-        //     LOG('getCurrentCompetitionId', 'HERE!')
-        //     AsyncStorage.getItem('currentCompetition',
-        //         (errors, currentCompetition) => {
-        //             if (errors !== null) {
-        //                 LOG(errors, 'observerCompetitionId')
-        //                 observer.next(false)
-        //             }
-        //             else {
-        //                 let parsedCompetition = JSON.parse(currentCompetition)
-        //                 LOG(parsedCompetition.name, 'observer')
-        //                 observer.next(parsedCompetition.name)
-        //
-        //             }
-        //             observer.complete()
-        //         })
-        // })
     }
 
-    //загружать из бд пункты по дате
+    //загружать из бд пункты по  айди дня - НЕ РАБОТАЕТ!
     getPoints = () => {
-
+        try {
+            AsyncStorage.getItem('currentCompetitionPoints', (errors, points) => {
+                if (errors !== null) {
+                    LOG(errors, 'observerCurrentCompetitionPoints')
+                }
+                else {
+                    let parsePoints = JSON.parse(points)
+                    LOG(parsePoints, 'Пункты')
+                    return parsePoints
+                }
+            })
+        } catch (error) {
+            LOG(error, 'Название соревнования не получено!')
+            return null
+        }
     }
 
     //вычислить сегодняшнюю дату
@@ -116,23 +113,16 @@ export class ChoosePointScreen extends React.Component {
 
         LOG(dateString)
         return dateString
-
-        // let dateString = ''
-        // let newDate = new Date()
-        //
-        // dateString += newDate.getFullYear() + '-'
-        // dateString += `0${newDate.getMonth() + 1}`.slice(-2) + '-'
-        // dateString += newDate.getDate()
-        // return dateString
     }
+
 
     render = () => {
         return <ActionContainer
             componentState={this.props.componentState}
             contentView={
                 <ContentView
-                    competitionName={this.compName}
-                    points={this.state.pointList}
+                    competitionName={this.state.compName}
+                    points={this.getPoints()}
                     day={this.getDay()}
                     onChange={this.onChange()}
                     onNav={this.onNav}

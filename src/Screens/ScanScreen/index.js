@@ -31,6 +31,15 @@ export class ScanCompetition extends React.Component {
         scanEnable: PropTypes.bool
     }
 
+    state = {
+        fullName: ''
+    }
+
+    constructor(props) {
+        super(props)
+        this.getFullName()
+    }
+
     componentDidMount() {
         LOG('MOUNT_ScanScreen', 'MOUNT')
         NfcManager.start({
@@ -73,14 +82,20 @@ export class ScanCompetition extends React.Component {
     scanFunction = () => {
 
     }
-
+    // Не работает!
     getFullName = async () => {
         try {
-            await AsyncStorage.getItem('fullName', (err, fullName) => {
-                return fullName
+            AsyncStorage.getItem('fullName', (errors, name) => {
+                if (errors !== null) {
+                    LOG(errors, 'observerCurrentCompetitionName')
+                }
+                else {
+                    LOG(name, ' Имя судьи: ')
+                    this.setState({fullName: name})
+                }
             })
         } catch (error) {
-            LOG(error, 'Полное имя не получено!')
+            LOG(error, 'Имя судьи не получено!')
             return null
         }
     }
@@ -102,7 +117,7 @@ export class ScanCompetition extends React.Component {
             componentState={this.props.screenState}
             contentView={
                 <ContentView
-                    judgeName={'Надя'}
+                    judgeName={this.state.fullName}
                     selectedPointName={'Под горой'}
                     scanState={ScanState.POINT_NOT_SELECTED}//доделать
                     description={'Соревнования ещё не начались. Сканирование не доступно.'}
