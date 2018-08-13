@@ -66,7 +66,7 @@ const requestAuthorisation = (response) => {
                 observer.error(errors)
             }
             else {
-                LOG('xomplete', 'observer')
+                LOG('сomplete', 'observer')
                 observer.next()
                 observer.complete()
             }

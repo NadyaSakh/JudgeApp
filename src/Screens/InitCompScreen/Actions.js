@@ -21,7 +21,7 @@ export const requestCompetitionEpic = action$ =>
     action$.ofType(Actions.REQUEST_COMPETITION)
         .mergeMap(() => {
             // Получение текущего соревнования:
-            return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/current')
+            return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/1')
             // return ajax.getJSON('http://my-json-server.typicode.com/NadyaSakh/Weather-app1/currentCompetition/')
 
             //дни: надо получать айди из базы текущего соревнования
@@ -39,15 +39,14 @@ export const requestCompetitionEpic = action$ =>
                         return saveCompetition(response)
                         //получить айди текущего соревнования
                             .mergeMap(() => getCurrentCompetitionId())
-                            .mergeMap((id) => {
-                                //получить дни и участников, ТАКОЙ ЭКШН МОЖНО ПИСАТЬ?
-                                requestDaysAndParticipantsAction(id)
-                            })
+                            .mergeMap(id => requestDaysAndParticipants(id))//получить дни и участников
                             .map(() => checkScanEnable(response))
-                            .mergeMap(scanEnable => Observable.of(requestCompetitionSuccessAction(true, scanEnable)))// Нельзя скачать соревнование
+                            .mergeMap(scanEnable => Observable.of(
+                                requestCompetitionSuccessAction(true, scanEnable))
+                            )
                     }
                     else {
-                        return Observable.of(requestCompetitionSuccessAction(false, false))
+                        return Observable.of(requestCompetitionSuccessAction(false, false))//Нельзя сканировать
                     }
                 })
                 .catch(error => {
@@ -56,31 +55,31 @@ export const requestCompetitionEpic = action$ =>
                 })
         })
 
-export const requestDaysAndParticipantsAction = id => ({
-    type: Actions.REQUEST_DAYS_PARTICIPANTS,
-    payload: {
-        id: id
-    }
-})
-
-export const requestDaysAndParticipantsEpic = action$ =>
-    action$.ofType(Actions.REQUEST_DAYS_PARTICIPANTS)
-        .mergeMap(action =>
-            // Получение дней и участников текущего соревнования
-            Observable.zip(
-                getDaysList(action.payload.id),
-                getParticipantsList(),
-                (days, participants) => ({days, participants})
-            ))
-        .map(data => {
+export const requestDaysAndParticipants = id => {
+    // Получение дней и участников текущего соревнования
+    LOG('requestDaysAndParticipantsEpic', 'HERE!')
+    return Observable.zip(
+        getDaysList(id),
+        getParticipantsList(),
+        getPointsList(),
+        (days, participants, points) => ({days, participants, points})
+    )
+        .mergeMap(data => {
+            LOG(data)
             //Сохранение дней и участников текущего соревнования
-            saveCurrentCompetitionDays(data.days)
-            saveCurrentCompetitionParticipants(data.participants)
+            return Observable.zip(
+                saveCurrentCompetitionDays(data.days),
+                saveCurrentCompetitionParticipants(data.participants),
+                saveCurrentCompetitionPoints(data.points),
+                () => {
+                }
+            )
         })
-
+}
 
 export const getCurrentCompetitionId = () => {
     return Observable.create(observer => {
+        LOG('getCurrentCompetitionId', 'HERE!')
         AsyncStorage.getItem('currentCompetition',
             (errors, currentCompetition) => {
                 if (errors !== null) {
@@ -88,10 +87,10 @@ export const getCurrentCompetitionId = () => {
                     observer.next(false)
                 }
                 else {
-                    LOG('idSuccessfullyGetted', 'observer')
-                    observer.next(currentCompetition.id)
+                    let parsedCompetition = JSON.parse(currentCompetition)
+                    LOG(parsedCompetition, 'observer')
+                    observer.next(parsedCompetition.id)
                 }
-
                 observer.complete()
             })
     })
@@ -99,6 +98,7 @@ export const getCurrentCompetitionId = () => {
 
 const saveCurrentCompetitionDays = response => {
     return Observable.create(observer => {
+        LOG('saveCurrentCompetitionDays', 'HERE!')
         AsyncStorage.setItem('currentCompetitionDays', JSON.stringify(response), error => {
             if (error !== null) {
                 observer.error(error)
@@ -113,6 +113,7 @@ const saveCurrentCompetitionDays = response => {
 
 const saveCurrentCompetitionParticipants = response => {
     return Observable.create(observer => {
+        LOG('saveCurrentCompetitionParticipants', 'HERE!')
         AsyncStorage.setItem('currentCompetitionParticipants', JSON.stringify(response), error => {
             if (error !== null) {
                 observer.error(error)
@@ -125,20 +126,27 @@ const saveCurrentCompetitionParticipants = response => {
     })
 }
 
-const getDaysList = id => {
-    return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/days/list?competitionId=' + id)
-        .timeout(5000)
-        .mergeMap(response => {
-            LOG(response, 'Получен список дней')
-            if (response) {
-                return response
+const saveCurrentCompetitionPoints = response => {
+    return Observable.create(observer => {
+        LOG('saveCurrentCompetitionPoints', 'HERE!')
+        AsyncStorage.setItem('currentCompetitionPoints', JSON.stringify(response), error => {
+            if (error !== null) {
+                observer.error(error)
             }
             else {
-                return null //ЧТО ВОЗВРАЩАТЬ?
+                observer.next()
+                observer.complete()
             }
         })
+    })
+}
+
+const getDaysList = id => {
+    LOG(id, 'id: ')
+    return ajax.getJSON(`https://afternoon-woodland-86438.herokuapp.com/days/list?competitionId=${id}`)
+        .timeout(5000)
         .catch(error => {
-            LOG(error, 'requestDays')
+            LOG(error, 'requestDaysError')
             return Observable.of(requestCompetitionFail())//Здесь доделать фэил дней
         })
 }
@@ -146,20 +154,22 @@ const getDaysList = id => {
 const getParticipantsList = () => {
     return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/participants/list?page=0&size=0&competitionId=1&status=accepted')
         .timeout(5000)
-        .mergeMap(response => {
-            LOG(response, 'Получен список дней')
-            if (response) {
-                return response
-            }
-            else {
-                return null //ЧТО ВОЗВРАЩАТЬ?
-            }
-        })
         .catch(error => {
-            LOG(error, 'requestParticipants')
+            LOG(error, 'requestParticipantsError')
             return Observable.of(requestCompetitionFail())//Здесь доделать фэил участников
         })
 }
+
+const getPointsList = () => {
+    return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/points/list?competitionDayId=1')
+        .timeout(5000)
+        .catch(error => {
+            LOG(error, 'requestPointsError')
+            return Observable.of(requestCompetitionFail())//Здесь доделать фэил полинтов или не надо?
+        })
+}
+
+
 
 const requestCompetitionSuccessAction = (competitionExists, scanEnable) => ({
     type: Actions.REQUEST_COMPETITION_SUCCESS,

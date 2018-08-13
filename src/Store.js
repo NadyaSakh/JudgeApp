@@ -9,8 +9,7 @@ import { splashScreenReducer } from './Screens/SplashScreen/Reducer'
 import { logger } from 'redux-logger'
 
 import {
-    requestCompetitionEpic,
-    requestDaysAndParticipantsEpic
+    requestCompetitionEpic
 } from './Screens/InitCompScreen/Actions'
 import { authorisationEpic } from './Screens/AuthScreen/Actions'
 import { scaningEpic } from './Screens/ScanScreen/Actions'
@@ -28,7 +27,6 @@ export const rootReducer = combineReducers({
 })
 
 export const rootEpic = combineEpics(
-    requestDaysAndParticipantsEpic,
     requestCompetitionEpic,
     authorisationEpic,
     scaningEpic,
