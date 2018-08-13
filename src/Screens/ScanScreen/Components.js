@@ -17,7 +17,7 @@ export const ContentView = props => {
             ScanState.POINT_NOT_SELECTED,
             ScanState.POINT_SELECTED
         ]),
-        pointName: PropTypes.string,
+        selectedPointName: PropTypes.string,
         judgeName: PropTypes.string,
         onPress: PropTypes.func,
         description: PropTypes.string
@@ -86,7 +86,6 @@ const SelectPointView = props => {
             text={Strings.POINT_NOT_SELECTED}
             styleHeader={styles.string}
         />
-        //должен происходить переход на страницу с выбором пунктов
         <Button
             onPress={props.onPress}
             title='Выбрать пункт'/>

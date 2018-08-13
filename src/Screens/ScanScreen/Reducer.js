@@ -3,8 +3,8 @@ import { ComponentState } from '../../Components/ActionContainer'
 // import { ScreensKeys } from '../../ScreenKey'
 
 const defaultState = {
-    screenState: ComponentState.CONTENT
-    //navigateTo: ''
+    screenState: ComponentState.CONTENT,
+    navigateTo: ''
 }
 
 export const ScanReducer = (prevState = defaultState, action) => {

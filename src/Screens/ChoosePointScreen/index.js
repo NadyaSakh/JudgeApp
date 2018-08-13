@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Observable } from 'rxjs'
 import {
     AsyncStorage
     // StyleSheet,
@@ -38,7 +39,6 @@ export class ChoosePointScreen extends React.Component {
 
     constructor(props) {
         super(props)
-
     }
 
     //Для перехода на другой экран
@@ -63,40 +63,67 @@ export class ChoosePointScreen extends React.Component {
     //Загружать из бд название соревнования
     getCompName = () => {
         try {
-            AsyncStorage.getItem('currentCompetition', (err, res) => {
-                LOG(res, 'ЗДЕСЬ!')
-                //доделать получение названия соревнования
-                return res
+            AsyncStorage.getItem('currentCompetition', (errors, currentCompetition) => {
+                if (errors !== null) {
+                    LOG(errors, 'observerCompetitionName')
+                    //Что-то ещё?
+                }
+                else {
+                    let parsedCompetition = JSON.parse(currentCompetition)
+                    let compName = parsedCompetition.name
+                    LOG(compName, 'Название соревнования')
+                    return compName
+                }
             })
         } catch (error) {
             LOG(error, 'Название соревнования не получено!')
             return null
         }
+
+        //Всегда ли, обращаясь в базу, нужно использовать Обсервэбл?
+        // return Observable.create(observer => {
+        //     LOG('getCurrentCompetitionId', 'HERE!')
+        //     AsyncStorage.getItem('currentCompetition',
+        //         (errors, currentCompetition) => {
+        //             if (errors !== null) {
+        //                 LOG(errors, 'observerCompetitionId')
+        //                 observer.next(false)
+        //             }
+        //             else {
+        //                 let parsedCompetition = JSON.parse(currentCompetition)
+        //                 LOG(parsedCompetition.name, 'observer')
+        //                 observer.next(parsedCompetition.name)
+        //
+        //             }
+        //             observer.complete()
+        //         })
+        // })
     }
 
     //загружать из бд пункты по дате
     getPoints = () => {
 
     }
+
     //вычислить сегодняшнюю дату
     getDay = () => {
-        // let dateString = ' '
-        //
-        // let newDate = new Date()
-        // dateString += (newDate.getMonth() + 1) + '/'
-        // dateString += newDate.getDate() + '/'
-        // dateString += newDate.getFullYear()
-        //
-        // LOG(dateString)
-        // return dateString
+        let dateString = ' '
 
-        let dateString = ''
         let newDate = new Date()
+        dateString += (newDate.getMonth() + 1) + '.'
+        dateString += newDate.getDate() + '.'
+        dateString += newDate.getFullYear()
 
-        dateString += newDate.getFullYear() + '-'
-        dateString += `0${newDate.getMonth() + 1}`.slice(-2) + '-'
-        dateString += newDate.getDate()
+        LOG(dateString)
         return dateString
+
+        // let dateString = ''
+        // let newDate = new Date()
+        //
+        // dateString += newDate.getFullYear() + '-'
+        // dateString += `0${newDate.getMonth() + 1}`.slice(-2) + '-'
+        // dateString += newDate.getDate()
+        // return dateString
     }
 
     render = () => {
@@ -104,7 +131,7 @@ export class ChoosePointScreen extends React.Component {
             componentState={this.props.componentState}
             contentView={
                 <ContentView
-                    competitionName={this.getCompName()}
+                    competitionName={this.compName}
                     points={this.state.pointList}
                     day={this.getDay()}
                     onChange={this.onChange()}

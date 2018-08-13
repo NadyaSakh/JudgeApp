@@ -12,6 +12,7 @@ import { LOG } from '../../Utils/logger'
 import { ActionContainer } from '../../Components/ActionContainer'
 import { ScanState } from './Constants'
 import NfcManager, { NdefParser } from 'react-native-nfc-manager'
+import { ScreensKeys } from '../../ScreenKey'
 
 
 export const mapStateToProps = state => ({
@@ -24,7 +25,10 @@ export const mapStateToProps = state => ({
 
 export class ScanCompetition extends React.Component {
     static propTypes = {
-        screenState: PropTypes.string.isRequired
+        screenState: PropTypes.string.isRequired,
+        navigateTo: PropTypes.string,
+        selectedPointName: PropTypes.string,
+        scanEnable: PropTypes.bool
     }
 
     componentDidMount() {
@@ -44,8 +48,18 @@ export class ScanCompetition extends React.Component {
 
         NfcManager.registerTagEvent(tag => {
             console.log('Tag Discovered', tag)
+
+            //проверять возможность сканирования
         }, 'Hold your device over the tag', true)
+
+        //проверять
     }
+
+    // componentDidUpdate = prevProps => {
+    //     if (this.props.navigateTo !== prevProps.navigateTo) {
+    //         this.props.navigation.navigate(ScreensKeys.Points)
+    //     }
+    // }
 
     componentWillUnmount() {
         NfcManager.unregisterTagEvent()
@@ -53,7 +67,7 @@ export class ScanCompetition extends React.Component {
     }
 
     navigation = () => {
-
+        this.props.navigation.navigate(ScreensKeys.POINTS)
     }
 
     scanFunction = () => {
@@ -88,8 +102,8 @@ export class ScanCompetition extends React.Component {
             componentState={this.props.screenState}
             contentView={
                 <ContentView
-                    judgeName={'Sergey'}
-                    pointName={'Под горой'}
+                    judgeName={'Надя'}
+                    selectedPointName={'Под горой'}
                     scanState={ScanState.POINT_NOT_SELECTED}//доделать
                     description={'Соревнования ещё не начались. Сканирование не доступно.'}
                     onPress={this.navigation}
