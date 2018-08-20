@@ -7,8 +7,6 @@ export const Actions = {
     REQUEST_COMPETITION: 'REQUEST_COMPETITION',
     REQUEST_COMPETITION_SUCCESS: 'REQUEST_COMPETITION_SUCCESS',
     REQUEST_COMPETITION_FAIL: 'REQUEST_COMPETITION_FAIL',
-    REQUEST_DAYS_PARTICIPANTS: 'REQUEST_DAYS_PARTICIPANTS',
-    REQUEST_POINTS: 'REQUEST_POINTS',
     REQUEST_DAYS_PARTICIPANTS_FAIL: 'REQUEST_COMPETITION_FAIL',
     REQUEST_POINTS_FAIL: 'REQUEST_POINTS_FAIL'
 }
@@ -21,6 +19,7 @@ export const requestCompetitionEpic = action$ =>
     action$.ofType(Actions.REQUEST_COMPETITION)
         .mergeMap(() => {
             // Получение текущего соревнования:
+            // return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/current')
             return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/1')
             // return ajax.getJSON('http://my-json-server.typicode.com/NadyaSakh/Weather-app1/currentCompetition/')
 
@@ -32,6 +31,7 @@ export const requestCompetitionEpic = action$ =>
 
             //Сейчас пока есть получение пунктов для конкретного дня соревноавния:
             //return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/points/list?competitionDayId=1')
+
                 .timeout(5000)
                 .mergeMap(response => {
                     LOG(response, 'Получен ответ')
@@ -59,21 +59,24 @@ export const requestDaysAndParticipants = id => {
     // Получение дней и участников текущего соревнования
     LOG('requestDaysAndParticipantsEpic', 'HERE!')
     return Observable.zip(
-        getDaysList(id),
+        getDaysAndPoints(id),
         getParticipantsList(),
-        getPointsList(),
-        (days, participants, points) => ({days, participants, points})
+        (daysAndPoints, participants) => ({daysAndPoints, participants})
     )
         .mergeMap(data => {
             LOG(data)
             //Сохранение дней и участников текущего соревнования
             return Observable.zip(
-                saveCurrentCompetitionDays(data.days),
                 saveCurrentCompetitionParticipants(data.participants),
-                saveCurrentCompetitionPoints(data.points),
+                saveCurrentCompetitionPoints(data.daysAndPoints.points),
+                saveCurrentCompetitionDays(data.daysAndPoints.days),
                 () => {
                 }
             )
+        })
+        .catch(error => {
+            LOG(error, 'requestDaysAndPointsError')
+            return Observable.of(requestCompetitionFail())//Здесь доделать фэил дней
         })
 }
 
@@ -141,14 +144,39 @@ const saveCurrentCompetitionPoints = response => {
     })
 }
 
-const getDaysList = id => {
+const getDaysAndPoints = id => {
     LOG(id, 'id: ')
     return ajax.getJSON(`https://afternoon-woodland-86438.herokuapp.com/days/list?competitionId=${id}`)
         .timeout(5000)
-        .catch(error => {
-            LOG(error, 'requestDaysError')
-            return Observable.of(requestCompetitionFail())//Здесь доделать фэил дней
+        .mergeMap(response => {//Можно вынести в функцию ParserPointsAndDays
+            let days = []
+            let points = []
+            if (response) {
+                response.content.forEach(dayWithPoints => {
+                    let day = {
+                        ...dayWithPoints,
+                        pointList: []
+                    }
+                    days.push(day)
+                })
+                // response.content.forEach(dayWithPoints => {
+                //     points.push(dayWithPoints.pointList)
+                // })
+                response.content.forEach(dayWithPoints => {
+                    dayWithPoints.pointList.forEach(point => {
+                        points.push(point)
+                    })
+                })
+
+                LOG(days, 'Дни')
+                LOG(points, 'Пункты')
+                return Observable.of({days, points})
+            }
         })
+    // .catch(error => {
+    //     LOG(error, 'requestDaysAndPointsError')
+    //     return Observable.of(requestCompetitionFail())//Здесь доделать фэил дней
+    // })
 }
 
 const getParticipantsList = () => {
@@ -159,17 +187,6 @@ const getParticipantsList = () => {
             return Observable.of(requestCompetitionFail())//Здесь доделать фэил участников
         })
 }
-
-const getPointsList = () => {
-    return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/points/list?competitionDayId=1')
-        .timeout(5000)
-        .catch(error => {
-            LOG(error, 'requestPointsError')
-            return Observable.of(requestCompetitionFail())//Здесь доделать фэил полинтов или не надо?
-        })
-}
-
-
 
 const requestCompetitionSuccessAction = (competitionExists, scanEnable) => ({
     type: Actions.REQUEST_COMPETITION_SUCCESS,
@@ -186,16 +203,6 @@ const requestCompetitionFail = () => ({
     }
 })
 
-// const saveAndCheck = response => {
-//     if (response) {
-//         return saveCompetition(response)
-//             .map(() => checkScanEnable(response))
-//             .mergeMap(scanEnable => Observable.of(requestCompetitionSuccessAction(true, scanEnable)))// Нельзя скачать соревнование
-//     }
-//     else {
-//         return Observable.of(requestCompetitionSuccessAction(false, false))
-//     }
-// }
 
 const saveCompetition = response => {
     return Observable.create(observer => {
@@ -221,7 +228,7 @@ const checkScanEnable = response => {
     LOG(response.dateStart, 'begin')
     LOG(response.dateFinish, 'finish')
     let res = (currentDate >= response.dateStart && currentDate <= response.dateFinish)
-    LOG(res, 'result')
+    LOG(res, 'Сейчас можно сканировать? Соревнование идет?')
     return res
 }
 

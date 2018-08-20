@@ -1,14 +1,16 @@
 import React from 'react'
 import {
     View,
-    StyleSheet,
-    Button
+    Button,
+    TouchableOpacity,
+    Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { SingleLineText } from '../../Components/SingleLineText'
-import { ScanState } from './Constants'
+import { ScanState } from '../../Store/Scan/Constants'
 import { Strings } from '../../Strings'
+import { styles } from '../../Components/Styles'
 
 export const ContentView = props => {
     ContentView.propTypes = {
@@ -23,10 +25,10 @@ export const ContentView = props => {
         description: PropTypes.string
     }
 
-    return <View style={styles.container}>
+    return <View>
         <SingleLineText
             text={`Вы зашли как: ${props.judgeName}`}
-            styleHeader={styles.string}
+            style={styles.textStyle}
         />
         {selectScanState({...props})}
     </View>
@@ -53,7 +55,7 @@ const DisabledScanView = props => {
     //description: не начались соревнования /прошли соревнования
     return <SingleLineText
         text={props.description}
-        styleHeader={styles.string}
+        style={styles.textStyle}
     />
 }
 
@@ -64,15 +66,15 @@ const EnableScanView = props => {
     return <View>
         <SingleLineText
             text={props.pointName}
-            styleHeader={styles.string}
+            style={styles.textStyle}
         />
         <SingleLineText
             text={Strings.SCANING}
-            styleHeader={styles.upperString}
+            style={styles.textStyle}
         />
         <SingleLineText
             text={Strings.SCAN_TIP}
-            styleHeader={styles.string}
+            style={styles.textStyle}
         />
     </View>
 }
@@ -84,34 +86,18 @@ const SelectPointView = props => {
     return <View>
         <SingleLineText
             text={Strings.POINT_NOT_SELECTED}
-            styleHeader={styles.string}
+            style={styles.textStyle}
         />
-        <Button
-            onPress={props.onPress}
-            title='Выбрать пункт'/>
+        {/*<Button*/}
+        {/*onPress={props.onPress}*/}
+        {/*title='Выбрать пункт'/>*/}
+        <View style={styles.centredView}>
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={props.onPress}
+            >
+                <Text style={styles.buttonText}> Выбрать пункт </Text>
+            </TouchableOpacity>
+        </View>
     </View>
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    string: {
-        paddingTop: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 2,
-        fontSize: 18,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(247,247,247,1.0)'
-    },
-    upperString: {
-        paddingTop: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 2,
-        fontSize: 18,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(247,247,247,1.0)'
-    }
-})

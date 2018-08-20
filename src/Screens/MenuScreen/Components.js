@@ -1,12 +1,14 @@
 import React from 'react'
 import {
-    View
+    View,
+    // Button,
+    Text,
+    TouchableOpacity
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
-import { Strings } from '../../Strings'
 import { styles } from '../../Components/Styles'
 
 export const Info = props => {
@@ -28,7 +30,7 @@ export const LoadingView = props => {
     return <View>
         <Info
             text={props.text}
-            style={styles.loadingStyle}
+            style={styles.textStyle}
         />
         <LoadingIndicator/>
     </View>
@@ -37,17 +39,23 @@ export const LoadingView = props => {
 export const ContentView = props => {
     ContentView.propTypes = {
         style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-        data: PropTypes.array,
-        name: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
-        competitionExists: PropTypes.bool
+        onPrevScanPress: PropTypes.func
     }
 
-    let screenText = props.competitionExists ?
-        Strings.CURRENT_COMPETITION_EXISTS :
-        Strings.CURRENT_COMPETITION_NOT_EXISTS
-
-    return <Info
-        text={screenText}
-        style={styles.textStyle}
-    />
+    return <View>
+        <Info
+            text={'Меню'}
+            style={styles.textStyle}
+        />
+        <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={props.onPrevScanPress}
+        >
+            <Text style={styles.buttonText}> Предварительное сканирование </Text>
+        </TouchableOpacity>
+        {/*<Button*/}
+        {/*onPress={props.onPrevScanPress}*/}
+        {/*title='Предварительное сканирование'*/}
+        {/*/>*/}
+    </View>
 }

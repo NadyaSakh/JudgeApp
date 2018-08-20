@@ -8,13 +8,15 @@ import { ChoosePointScreenReducer } from './Screens/ChoosePointScreen/Reducer'
 import { splashScreenReducer } from './Screens/SplashScreen/Reducer'
 import { logger } from 'redux-logger'
 
-import {
-    requestCompetitionEpic
-} from './Screens/InitCompScreen/Actions'
+import { requestCompetitionEpic } from './Screens/InitCompScreen/Actions'
 import { authorisationEpic } from './Screens/AuthScreen/Actions'
-import { scaningEpic } from './Screens/ScanScreen/Actions'
-import { chooseEpic } from './Screens/ChoosePointScreen/Actions'
+import { getFullNameEpic } from './Screens/ScanScreen/Actions'
+import { chooseEpic, getCompNameEpic, getPointsEpic } from './Screens/ChoosePointScreen/Actions'
 import { checkAuthEpic } from './Screens/SplashScreen/Actions'
+import { MenuReducer } from './Screens/MenuScreen/Reducer'
+import { PreScanReducer } from './Screens/PreScanScreen/Reducer'
+import { ScanStoreReducer } from './Store/Scan/Reducer'
+import { sendTagEpic } from './Screens/PreScanScreen/Actions'
 
 
 export const rootReducer = combineReducers({
@@ -22,16 +24,22 @@ export const rootReducer = combineReducers({
     authReducer,
     ScanReducer,
     ChoosePointScreenReducer,
-    splashScreenReducer
+    splashScreenReducer,
+    MenuReducer,
+    PreScanReducer,
+    ScanStoreReducer
 
 })
 
 export const rootEpic = combineEpics(
     requestCompetitionEpic,
     authorisationEpic,
-    scaningEpic,
     chooseEpic,
-    checkAuthEpic
+    checkAuthEpic,
+    getCompNameEpic,
+    getPointsEpic,
+    getFullNameEpic,
+    sendTagEpic
 )
 
 export const epicMiddleware = createEpicMiddleware(rootEpic)

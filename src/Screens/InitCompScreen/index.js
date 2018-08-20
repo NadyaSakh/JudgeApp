@@ -1,11 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { View } from 'react-native'
 
 import { ActionContainer } from '../../Components/ActionContainer'
 import { ContentView, LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
 import { requestCompetitionAction } from './Actions'
+import { styles } from '../../Components/Styles'
 
 export const mapStateToProps = state => ({
     ...state.InitScreenReducer //когда вся ифа из стора редьюсера
@@ -38,26 +40,29 @@ export class CurrentCompetition extends React.Component {
     }
 
     render = () => {
-        return <ActionContainer
-            componentState={this.props.screenState}
-            contentView={
-                <ContentView
-                    competitionExists={this.props.competitionExists}
-                />
-            }
+        return <View style={styles.container}>
+            <ActionContainer
+                componentState={this.props.screenState}
+                contentView={
+                    <ContentView
+                        competitionExists={this.props.competitionExists}
+                    />
+                }
 
-            errorView={
-                <ErrorView
-                    text='Список соревнований не загружен.'
-                    onRepeat={this.props.loadCurrentCompetitionData}
-                />
-            }
-            loadingView={
-                <LoadingView
-                    text={'Загрузка информации о соревновании. Пожалуйста, подождите.'}/>
-            }
-        />
+                errorView={
+                    <ErrorView
+                        text='Список соревнований не загружен.'
+                        onRepeat={this.props.loadCurrentCompetitionData}
+                    />
+                }
+                loadingView={
+                    <LoadingView
+                        text={'Загрузка информации о соревновании. Пожалуйста, подождите.'}/>
+                }
+            />
+        </View>
     }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentCompetition)

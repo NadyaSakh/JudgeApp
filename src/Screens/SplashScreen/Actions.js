@@ -35,6 +35,7 @@ export const checkAuthEpic = action$ =>
                 LOG('ИНИЦИАЛИЗАЦИЯ')
                 nextAction = Actions.NAVIGATE_TO_INIT
             } else {
+
                 nextAction = Actions.NAVIGATE_TO_APP
             }
 

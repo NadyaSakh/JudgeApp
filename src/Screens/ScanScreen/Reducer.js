@@ -4,7 +4,8 @@ import { ComponentState } from '../../Components/ActionContainer'
 
 const defaultState = {
     screenState: ComponentState.CONTENT,
-    navigateTo: ''
+    navigateTo: '',
+    fullName: ''
 }
 
 export const ScanReducer = (prevState = defaultState, action) => {
@@ -29,6 +30,19 @@ export const ScanReducer = (prevState = defaultState, action) => {
                 screenState: ComponentState.ERROR
             }
         }
+        case Actions.GETTING_FULL_NAME_SUCCESS: {
+            return {
+                ...prevState,
+                screenState: ComponentState.CONTENT,
+                fullName: action.payload.fullName
+            }
+        }
+        // case Actions.GETTING_FULL_NAME_FAIL: {
+        //     return {
+        //         ...prevState,
+        //         screenState: ComponentState.ERROR
+        //     }
+        // }
 
         default: {
             return prevState

@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { View } from 'react-native'
 
 import { ActionContainer, ContentView, LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
 import { requestCompetitionAction } from './Actions'
+import { styles } from '../../Components/Styles'
 
 export const mapStateToProps = state => ({
     screenState: state.reducer.screenState,
@@ -36,24 +38,26 @@ export class ChooseCompetition extends React.Component {
     }
 
     render = () => {
-        return <ActionContainer
-            screenState={this.props.screenState}
-            contentView={
-                <ContentView
-                    text={'Выберите соревнование1'}
-                    onCompetitionPress={this.props.onCompetitionPress}
-                    name={this.props.competitionName}
-                />
-            }
-            errorView={
-                <ErrorView
-                    text='Список соревнований не загружен.'/>
-            }
-            loadingView={
-                <LoadingView
-                    text={'Выберите соревнование'}/>
-            }
-        />
+        return <View style={styles.container}>
+            <ActionContainer
+                screenState={this.props.screenState}
+                contentView={
+                    <ContentView
+                        text={'Выберите соревнование1'}
+                        onCompetitionPress={this.props.onCompetitionPress}
+                        name={this.props.competitionName}
+                    />
+                }
+                errorView={
+                    <ErrorView
+                        text='Список соревнований не загружен.'/>
+                }
+                loadingView={
+                    <LoadingView
+                        text={'Выберите соревнование'}/>
+                }
+            />
+        </View>
     }
 }
 

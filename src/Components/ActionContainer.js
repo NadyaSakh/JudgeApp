@@ -62,10 +62,11 @@ export class ActionContainer extends React.Component {
     }
 }
 
-
 export const styles = StyleSheet.create({
     container: {
-        flex: 1// 0 - для авторизации, нужно переправить, чтобы корректно отображалось
+        flex: 0,
+        justifyContent: 'center',
+        alignItems: 'center'// 0 - для авторизации, нужно переправить, чтобы корректно отображалось
     }
 })
 
