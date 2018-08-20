@@ -2,15 +2,16 @@ import React from 'react'
 import {
     View,
     Button,
-    StyleSheet,
     Alert,
-    TouchableHighlight,
-    FlatList
+    TouchableOpacity,
+    FlatList,
+    Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
+import { styles } from '../../Components/Styles'
 
 export const ListItem = props => {
     ListItem.propTypes = {
@@ -18,7 +19,8 @@ export const ListItem = props => {
         style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
-    return <TouchableHighlight
+    return <TouchableOpacity
+        style={styles.listItem}
         onPress={() => {
             props.onPress ?
                 props.onPress() :
@@ -27,23 +29,27 @@ export const ListItem = props => {
         <SingleLineText
             style={props.style}
             text={props.text}/>
-    </TouchableHighlight>
+    </TouchableOpacity>
 }
 
 export const PointsList = props => {
     PointsList.propTypes = {
         pointsList: PropTypes.array,
-        onPress: PropTypes.func,
+        onPointPress: PropTypes.func,
         style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
 
-    onPress = props => {
+    const onPress = props => {
+
         onPress.propTypes = {
-            onPress: PropTypes.func
+            onPointPress: PropTypes.func
         }
-        props.onPress()
+
+        props.onPointPress()
     }
+    // Сохранять id пункта или name и записывать в выбранный пункт
+    // Для этого нужна дополнительная функция?
 
     return <FlatList
         data={props.pointsList}
@@ -52,7 +58,7 @@ export const PointsList = props => {
                 <ListItem
                     onPress={this.onPress}
                     style={props.style}
-                    text={item.key}/>
+                    text={item.name}/>
             )
         }}
         keyExtractor={(item, index) => index}
@@ -61,13 +67,13 @@ export const PointsList = props => {
 
 export const LoadingView = props => {
     LoadingView.propTypes = {
-        styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
     return <View>
         <SingleLineText
             text={props.text}
-            styleHeader={styles.sectionHeader}
+            style={styles.textStyle}
         />
         <LoadingIndicator/>
     </View>
@@ -81,62 +87,44 @@ export const ContentView = props => {
         onChange: PropTypes.func,
         onNav: PropTypes.func,
         day: PropTypes.string,
+        isChecked: PropTypes.bool,
+        yourPoint: PropTypes.string,
         onPointPress: PropTypes.func
     }
+
+    let text = (props.isChecked ? `Ваш пункт "${props.yourPoint}"` : 'Выберите свой пункт:')
 
     return <View>
         <SingleLineText
             text={`Гонка "${props.competitionName}"`}
-            styleHeader={styles.styleHeader}
+            style={styles.textStyle}
         />
         <SingleLineText
             text={`Сегодня: ${props.day}`}
-            styleHeader={styles.styleHeader}
+            style={styles.textStyle}
         />
         <SingleLineText
-            text={'Выберите свой пункт:'}
-            styleHeader={styles.styleHeader}
+            text={text}
+            style={styles.textStyle}
         />
         <PointsList
             pointsList={props.points}
             onPress={() =>
-                props.onPointPress()
+                props.onPointPress
             }
             style={styles.item}
         />
-        <View style={styles.container}>
-            <Button
+        {/*<Button*/}
+        {/*onPress={props.onChange}*/}
+        {/*title='Изменить пункт'*/}
+        {/*/>*/}
+        <View style={styles.centredView}>
+            <TouchableOpacity
+                style={styles.buttonStyle}
                 onPress={props.onChange}
-                title='Изменить пункт'
-
-            />
-            <Button
-                onPress={props.onNav}
-                title='Перейти к сканированию'
-            />
+            >
+                <Text style={styles.buttonText}> Изменить пункт </Text>
+            </TouchableOpacity>
         </View>
     </View>
 }
-
-export const styles = StyleSheet.create({
-    sectionHeader: {
-        paddingTop: 10,
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingBottom: 2,
-        backgroundColor: 'blue',
-        fontSize: 16,
-        height: 36
-    },
-    item: {
-        padding: 10,
-        // backgroundColor: 'green',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 16,
-        height: 44
-    },
-    container: {
-        flexDirection: 'row'
-    }
-})

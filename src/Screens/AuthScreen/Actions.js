@@ -22,7 +22,6 @@ export const authorisationEpic = action$ =>
     action$.ofType(Actions.AUTHORISATION)
     // .mergeMap(action => {
         .mergeMap(() => {
-            // ajax.post(url: string, body?: any, headers?: Object): Observable<AjaxResponse>
             // return ajax.post('https://my-json-server.typicode.com/NadyaSakh/Auth1/auth',
             //     {
             //         'login': action.payload.login,
@@ -31,7 +30,7 @@ export const authorisationEpic = action$ =>
             //     {'Content-Type': 'application / json'})
 
             return ajax.getJSON('https://my-json-server.typicode.com/NadyaSakh/Auth1/auth')
-                .timeout(5000)
+                .timeout(10000)
                 .mergeMap(response => {
                     LOG(response, 'Success')
                     return requestAuthorisation(response)

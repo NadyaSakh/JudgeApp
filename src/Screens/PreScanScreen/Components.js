@@ -1,12 +1,14 @@
 import React from 'react'
 import {
-    View
+    View,
+    Button,
+    Text,
+    TouchableOpacity
 } from 'react-native'
 import PropTypes from 'prop-types'
 
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
-import { Strings } from '../../Strings'
 import { styles } from '../../Components/Styles'
 
 export const Info = props => {
@@ -28,7 +30,7 @@ export const LoadingView = props => {
     return <View>
         <Info
             text={props.text}
-            style={styles.loadingStyle}
+            style={styles.textStyle}
         />
         <LoadingIndicator/>
     </View>
@@ -37,17 +39,30 @@ export const LoadingView = props => {
 export const ContentView = props => {
     ContentView.propTypes = {
         style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-        data: PropTypes.array,
-        name: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
-        competitionExists: PropTypes.bool
+        tag: PropTypes.array,
+        onPress: PropTypes.func
     }
 
-    let screenText = props.competitionExists ?
-        Strings.CURRENT_COMPETITION_EXISTS :
-        Strings.CURRENT_COMPETITION_NOT_EXISTS
-
-    return <Info
-        text={screenText}
-        style={styles.textStyle}
-    />
+    return <View>
+        <Info
+            text={'Сканирование.. Пожалуйста, поднесите NFC метку к телефону.'}
+            style={styles.textStyle}
+        />
+        <Info
+            text={`Отсканированная метка: ${props.tag}`}
+            style={styles.textStyle}
+        />
+        {/*<Button*/}
+        {/*onPress={props.onPress}*/}
+        {/*title='Отправить метки'*/}
+        {/*/>*/}
+        <View style={styles.centredView}>
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                onPress={props.onPress}
+            >
+                <Text style={styles.buttonText}> Отправить метки </Text>
+            </TouchableOpacity>
+        </View>
+    </View>
 }

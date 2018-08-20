@@ -2,14 +2,14 @@ import React from 'react'
 import {
     ActivityIndicator,
     StatusBar,
-    StyleSheet,
     View,
     Text
 } from 'react-native'
 import PropTypes from 'prop-types'
-import { AuthScreen } from '../AuthScreen'
 import { connect } from 'react-redux'
+
 import { checkAuthAction } from './Actions'
+import { styles } from '../../Components/Styles'
 
 const mapStateToProps = state => ({...state.splashScreenReducer})
 
@@ -45,13 +45,5 @@ export class SplashScreen extends React.Component {
         )
     }
 }
-
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 22
-    }
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen)

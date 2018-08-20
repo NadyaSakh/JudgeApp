@@ -1,60 +1,57 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import { Observable } from 'rxjs'
-import {
-    AsyncStorage
-    // StyleSheet,
-    // View
-} from 'react-native'
-
+import { View } from 'react-native'
 
 import { ActionContainer } from '../../Components/ActionContainer'
 import { ContentView, LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
 import { LOG } from '../../Utils/logger'
-
+import { getCompNameAction, getPointsAction } from './Actions'
+import { styles } from '../../Components/Styles'
 
 const mapStateToProps = state => ({...state.ChoosePointScreenReducer})
 
-// const mapDispatchToProps = dispatch => ({
-// })
+const mapDispatchToProps = dispatch => ({
+    getCompName: () => dispatch(getCompNameAction()),
+    getPoints: () => dispatch(getPointsAction())
+})
 
 export class ChoosePointScreen extends React.Component {
-    static propTypes = {
-        componentState: PropTypes.string.isRequired
-        // navigateTo: PropTypes.string,
-        // navigation: PropTypes.object
+    static navigationOptions = {
+        title: 'Выбор пункта',
+        headerStyle: {
+            backgroundColor: '#2080ff'
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold'
+        }
     }
 
-    state = {
-        pointList: [
-            {key: 'Под горой'},
-            {key: 'У реки'},
-            {key: 'Переезд'},
-            {key: 'Заправка'},
-            {key: 'Пункт отдыха'}
-        ],
-        compName: ''
+    static propTypes = {
+        componentState: PropTypes.string.isRequired,
+        competitionName: PropTypes.string,
+        currentPoints: PropTypes.array,
+        getCompName: PropTypes.func,
+        getPoints: PropTypes.func
+    }
+
+    componentDidMount() {
+        this.getCompName()
+        this.getPoints()
     }
 
     constructor(props) {
         super(props)
     }
 
-    //Для перехода на другой экран
-    // componentDidUpdate = prevProps => {
-    //     if (this.props.navigateTo !== prevProps.navigateTo) {
-    //         this.props.navigation.navigate(this.props.navigateTo)
-    //     }
-    // }
-
     onNav = () => {
 
     }
-
+    //Че это, я забыла..
     onChange = () => {
-        this.getCompName()
+        // this.getCompName()
     }
 
     onPointPress = () => {
@@ -63,43 +60,12 @@ export class ChoosePointScreen extends React.Component {
 
     //Загружать из бд название соревнования
     getCompName = () => {
-        try {
-            AsyncStorage.getItem('currentCompetition', (errors, currentCompetition) => {
-                if (errors !== null) {
-                    LOG(errors, 'observerCompetitionName')
-                    //Что-то ещё?
-                }
-                else {
-                    let parsedCompetition = JSON.parse(currentCompetition)
-                    let compName = parsedCompetition.name
-                    LOG(compName, 'Название соревнования')
-                    this.setState({compName: compName})
-                    return compName
-                }
-            })
-        } catch (error) {
-            LOG(error, 'Название соревнования не получено!')
-            return null
-        }
+        this.props.getCompName()
     }
 
     //загружать из бд пункты по  айди дня - НЕ РАБОТАЕТ!
     getPoints = () => {
-        try {
-            AsyncStorage.getItem('currentCompetitionPoints', (errors, points) => {
-                if (errors !== null) {
-                    LOG(errors, 'observerCurrentCompetitionPoints')
-                }
-                else {
-                    let parsePoints = JSON.parse(points)
-                    LOG(parsePoints, 'Пункты')
-                    return parsePoints
-                }
-            })
-        } catch (error) {
-            LOG(error, 'Название соревнования не получено!')
-            return null
-        }
+        this.props.getPoints()
     }
 
     //вычислить сегодняшнюю дату
@@ -115,38 +81,40 @@ export class ChoosePointScreen extends React.Component {
         return dateString
     }
 
-
+    // Исправить ошибки в компонентах:
+    // В onPress
+    // В key extractor
+    // Style invalid prop in SingleLineText in TouchableHighlight
+    // isMounted
     render = () => {
-        return <ActionContainer
-            componentState={this.props.componentState}
-            contentView={
-                <ContentView
-                    competitionName={this.state.compName}
-                    points={this.getPoints()}
-                    day={this.getDay()}
-                    onChange={this.onChange()}
-                    onNav={this.onNav}
-                    onPointPress={this.onPointPress}
-                />
-            }
-            errorVisibility={false}
-            errorView={
-                <ErrorView
-                    text='Ошибка. Пункты не загружены.'/>
-            }
-            loadingView={
-                <LoadingView
-                    text={'Загрузка пунктов. Пожалуйста, подождите.'}/>
-            }
-        />
+
+        return <View style={styles.container}>
+            <ActionContainer
+                componentState={this.props.componentState}
+                contentView={
+                    <ContentView
+                        competitionName={this.props.competitionName}
+                        points={this.props.currentPoints}
+                        day={this.getDay()}
+                        onChange={this.onChange()}
+                        onNav={this.onNav}
+                        onPointPress={this.onPointPress}
+                        isChecked={false}
+                    />
+                }
+                errorVisibility={false}
+                errorView={
+                    <ErrorView
+                        text='Ошибка. Пункты не загружены.'/>
+                }
+                loadingView={
+                    <LoadingView
+                        text={'Загрузка пунктов. Пожалуйста, подождите.'}/>
+                }
+            />
+        </View>
     }
 }
 
-// export const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: 'skyblue',
-//         flex: 2
-//     }
-// })
 
-export default connect(mapStateToProps)(ChoosePointScreen)//ет диспатча
+export default connect(mapStateToProps, mapDispatchToProps)(ChoosePointScreen)

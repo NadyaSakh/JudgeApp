@@ -3,17 +3,17 @@ import {
     View,
     TouchableHighlight,
     FlatList,
-    StyleSheet,
     Alert,
     Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 
-import { ScreenState } from '../../Components/ScreenState'
+import { ComponentState } from '../../Components/ActionContainer'
 import { LoadingIndicator } from '../../Components/LoadingIndicator'
 import { SingleLineText } from '../../Components/SingleLineText'
 import { LOG } from '../../Utils/logger'
 import { Button } from 'react-native'
+import { styles } from '../../Components/Styles'
 
 export const CompetitionItem = props => {
     CompetitionItem.propTypes = {
@@ -35,13 +35,13 @@ export const CompetitionItem = props => {
 
 export const CompetitionList = props => {
     CompetitionList.propTypes = {
-        pointsList: PropTypes.array,
+        competitionList: PropTypes.array,
         onPress: PropTypes.func,
         style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
 
-    onPress = props => {
+    const onPress = props => {
         onPress.propTypes = {
             onPress: PropTypes.func
         }
@@ -64,24 +64,24 @@ export const CompetitionList = props => {
 
 export const Info = props => {
     Info.propTypes = {
-        styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array])
     }
     return <SingleLineText
         text={props.text}
-        styleHeader={props.styleHeader}
+        style={props.style}
     />
 }
 
 export const LoadingView = props => {
     LoadingView.propTypes = {
-        styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
     return <View>
         <Info
             text={props.text}
-            styleHeader={styles.sectionHeader}
+            style={styles.textStyle}
         />
         <LoadingIndicator/>
     </View>
@@ -89,7 +89,7 @@ export const LoadingView = props => {
 
 export const ContentView = props => {
     ContentView.propTypes = {
-        styleHeader: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
         text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         data: PropTypes.array,
         onCompetitionPress: PropTypes.func,
@@ -99,7 +99,7 @@ export const ContentView = props => {
     return <View>
         <Info
             text={props.text}
-            styleHeader={styles.sectionHeader}
+            style={styles.textStyle}
         />
         <Button
             onPress={props.onCompetitionPress}
@@ -119,9 +119,9 @@ export const ContentView = props => {
 export class ActionContainer extends React.Component {
     static propTypes = {
         screenState: PropTypes.oneOf([
-            ScreenState.LOADING,
-            ScreenState.CONTENT,
-            ScreenState.ERROR
+            ComponentState.LOADING,
+            ComponentState.CONTENT,
+            ComponentState.ERROR
         ]),
 
         loadingView: PropTypes.object,
@@ -132,15 +132,15 @@ export class ActionContainer extends React.Component {
     render = () => {
         LOG('render', 'ActionContainer')
         switch (this.props.screenState) {
-            case ScreenState.LOADING: {
+            case ComponentState.LOADING: {
                 return this.renderLoadingView()
             }
 
-            case ScreenState.ERROR: {
+            case ComponentState.ERROR: {
                 return this.renderErrorView()
             }
 
-            case ScreenState.CONTENT: {
+            case ComponentState.CONTENT: {
                 return this.renderContentView()
             }
         }
@@ -164,24 +164,3 @@ export class ActionContainer extends React.Component {
         </View>
     }
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 22
-    },
-    sectionHeader: {
-        paddingTop: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 2,
-        fontSize: 18,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(247,247,247,1.0)'
-    },
-    item: {
-        padding: 10,
-        fontSize: 16,
-        height: 44
-    }
-})

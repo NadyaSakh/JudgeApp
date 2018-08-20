@@ -4,9 +4,12 @@ import { connect } from 'react-redux'
 import {
     View,
     TextInput,
-    Button, StyleSheet
+    // Button,
+    TouchableOpacity,
+    Text
 } from 'react-native'
 
+import { styles } from '../../Components/Styles'
 import { ActionContainer } from '../../Components/ActionContainer'
 import { LoadingView } from './Components'
 import { ErrorView } from '../../Components/ScreenError'
@@ -26,6 +29,7 @@ export class AuthScreen extends React.Component {
         signIn: PropTypes.func,
         navigation: PropTypes.object
     }
+
 
     state = {
         login: '',
@@ -71,10 +75,13 @@ export class AuthScreen extends React.Component {
             <ActionContainer
                 componentState={this.props.componentState}
                 contentView={
-                    <Button
+                    <TouchableOpacity
+                        style={styles.buttonStyle}
                         onPress={this.onSubmit}
                         disabled={this.state.login.length === 0 && this.state.password.length === 0}
-                        title='Войти'/>
+                    >
+                        <Text style={styles.buttonText}> Войти </Text>
+                    </TouchableOpacity>
                 }
                 errorVisibility={false}
                 errorView={
@@ -90,15 +97,9 @@ export class AuthScreen extends React.Component {
     }
 }
 
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    textInput: {
-        alignSelf: 'stretch'
-    }
-})
 
+// <Button
+// onPress={this.onSubmit}
+// disabled={this.state.login.length === 0 && this.state.password.length === 0}
+// title='Войти'/>
 export default connect(mapStateToProps, mapDispatchToProps)(AuthScreen)

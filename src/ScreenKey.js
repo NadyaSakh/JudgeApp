@@ -4,6 +4,9 @@ export const ScreensKeys = {
     INIT: 'INIT',
     SPLASH: 'SPLASH',
     POINTS: 'POINTS',
-    SCAN: 'SCAN'
+    SCAN: 'SCAN',
+    MENU: 'MENU',
+    PRE_SCAN: 'PRE_SCAN'
+
 }
 

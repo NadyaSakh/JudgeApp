@@ -3,7 +3,9 @@ import { ComponentState } from '../../Components/ActionContainer'
 // import { ScreensKeys } from '../../ScreenKey'
 
 const defaultState = {
-    componentState: ComponentState.CONTENT
+    componentState: ComponentState.CONTENT,
+    currentPoints: null,
+    competitionName: ''
     // navigateTo: ''
 }
 
@@ -29,6 +31,29 @@ export const ChoosePointScreenReducer = (prevState = defaultState, action) => {
                 componentState: ComponentState.ERROR
             }
         }
+
+        case Actions.GETTING_COMPETITION_NAME_SUCCESS: {
+            return {
+                ...prevState,
+                componentState: ComponentState.CONTENT,
+                competitionName: action.payload.competitionName
+            }
+        }
+
+        case Actions.GETTING_POINTS_SUCCESS: {
+            return {
+                ...prevState,
+                componentState: ComponentState.CONTENT,
+                currentPoints: action.payload.currentPoints
+            }
+        }
+
+        // case Actions.GETTING_POINTS_ERROR: {
+        //     return {
+        //         ...prevState,
+        //         screenState: ComponentState.ERROR
+        //     }
+        // }
 
         default: {
             return prevState
