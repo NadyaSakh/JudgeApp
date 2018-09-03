@@ -11,18 +11,20 @@ import { ErrorView } from '../../Components/ScreenError'
 import { ContentView } from './Components'
 import { LOG } from '../../Utils/logger'
 import { ActionContainer } from '../../Components/ActionContainer'
-import { ScanState } from '../../Store/Scan/Constants'
 import NfcManager, { NdefParser } from 'react-native-nfc-manager'
 import { ScreensKeys } from '../../ScreenKey'
 import { getFullNameAction } from './Actions'
 import { styles } from '../../Components/Styles'
+import { checkScanAvailabilityAction } from '../../Store/Scan/Actions'
 
 export const mapStateToProps = state => ({
-    ...state.ScanReducer
+    ...state.ScanScreenReducer,
+    ...state.ScanStoreReducer
 })
 
 export const mapDispatchToProps = dispatch => ({
-    getFullName: () => dispatch(getFullNameAction())
+    getFullName: () => dispatch(getFullNameAction()),
+    checkScanAvailable: () => dispatch(checkScanAvailabilityAction())
 })
 
 export class ScanCompetition extends React.Component {
@@ -36,19 +38,28 @@ export class ScanCompetition extends React.Component {
         selectedPointName: PropTypes.string,
         scanState: PropTypes.string,
         fullName: PropTypes.string,
-        getFullName: PropTypes.func
+        getFullName: PropTypes.func,
+        chosenPoint: PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string
+        }),
+        checkScanAvailable: PropTypes.func
+    }
+
+    state = {
+        tag: ''
     }
 
     componentDidMount() {
         LOG('componentDidMount')
         this.getFullName()
+        this.checkScanAvailable()
     }
 
-    // Добавить проверку, можно ли сканировать?
-    // С пропсов будет приходить переменная scanState со значением:
-    // ScanState.POINT_SELECTED, значит можно сканировать
-    // Если ScanState.SCAN_DISABLE или ScanState.POINT_NOT_SELECTED
-    // - нельзя сканировать
+    scanFunction = () => {
+
+    }
+
     scanNFC = () => {
         NfcManager.start({
             onSessionClosedIOS: () => {
@@ -66,7 +77,12 @@ export class ScanCompetition extends React.Component {
         NfcManager.registerTagEvent(tag => {
             LOG(tag, 'Tag Discovered:')
             //id: "FD7CDEC0"
-            this.setState({tag: tag})
+            this.setState({tag: tag.id})
+            //Перейти на экран выбора типа события
+            this.props.navigation.navigate(ScreensKeys.SCAN_TYPE_SCREEN, {
+                tagId: tag.id,
+                pointId: this.props.chosenPoint.id
+            })
         }, 'Hold your device over the tag', true)
     }
 
@@ -77,6 +93,10 @@ export class ScanCompetition extends React.Component {
     // Получить польное имя судьи
     getFullName = () => {
         this.props.getFullName()
+    }
+
+    checkScanAvailable = () => {
+        this.props.checkScanAvailable()
     }
 
     render = () => {
@@ -97,14 +117,14 @@ export class ScanCompetition extends React.Component {
                 contentView={
                     <ContentView
                         judgeName={this.props.fullName}
-                        selectedPointName={'Под горой'}
-                        scanState={ScanState.POINT_NOT_SELECTED}//доделать
-                        description={'Соревнования ещё не начались. Сканирование не доступно.'}
+                        selectedPoint={this.props.chosenPoint.name}
+                        scanState={this.props.scanState}
+                        description={'Текущих соревнований нет. Сканирование не доступно.'}
                         onPress={this.navigation}
                     />
                 }
                 loadingView={
-                    <Text>Идёт сканирование. Пожалуйста подождите.</Text>
+                    <Text>Идёт проверка даты. Пожалуйста подождите.</Text>
                 }
                 errorView={
                     <ErrorView

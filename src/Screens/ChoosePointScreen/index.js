@@ -9,12 +9,14 @@ import { ErrorView } from '../../Components/ScreenError'
 import { LOG } from '../../Utils/logger'
 import { getCompNameAction, getPointsAction } from './Actions'
 import { styles } from '../../Components/Styles'
+import { choosePointAction } from '../../Store/Scan/Actions'
 
 const mapStateToProps = state => ({...state.ChoosePointScreenReducer})
 
 const mapDispatchToProps = dispatch => ({
     getCompName: () => dispatch(getCompNameAction()),
-    getPoints: () => dispatch(getPointsAction())
+    getPoints: () => dispatch(getPointsAction()),
+    choosePoint: point => dispatch(choosePointAction(point))
 })
 
 export class ChoosePointScreen extends React.Component {
@@ -34,7 +36,8 @@ export class ChoosePointScreen extends React.Component {
         competitionName: PropTypes.string,
         currentPoints: PropTypes.array,
         getCompName: PropTypes.func,
-        getPoints: PropTypes.func
+        getPoints: PropTypes.func,
+        choosePoint: PropTypes.func
     }
 
     componentDidMount() {
@@ -46,16 +49,10 @@ export class ChoosePointScreen extends React.Component {
         super(props)
     }
 
-    onNav = () => {
-
-    }
-    //Че это, я забыла..
-    onChange = () => {
-        // this.getCompName()
-    }
-
-    onPointPress = () => {
-
+    onPointPress = point => {
+        this.props.choosePoint(point)
+        LOG('HERE', 'POINT_CHOOSEN')
+        this.props.navigation.goBack()
     }
 
     //Загружать из бд название соревнования
@@ -63,7 +60,6 @@ export class ChoosePointScreen extends React.Component {
         this.props.getCompName()
     }
 
-    //загружать из бд пункты по  айди дня - НЕ РАБОТАЕТ!
     getPoints = () => {
         this.props.getPoints()
     }
@@ -82,12 +78,9 @@ export class ChoosePointScreen extends React.Component {
     }
 
     // Исправить ошибки в компонентах:
-    // В onPress
     // В key extractor
-    // Style invalid prop in SingleLineText in TouchableHighlight
     // isMounted
     render = () => {
-
         return <View style={styles.container}>
             <ActionContainer
                 componentState={this.props.componentState}
@@ -96,9 +89,7 @@ export class ChoosePointScreen extends React.Component {
                         competitionName={this.props.competitionName}
                         points={this.props.currentPoints}
                         day={this.getDay()}
-                        onChange={this.onChange()}
-                        onNav={this.onNav}
-                        onPointPress={this.onPointPress}
+                        onPress={this.onPointPress}
                         isChecked={false}
                     />
                 }

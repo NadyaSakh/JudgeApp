@@ -19,7 +19,7 @@ export const ContentView = props => {
             ScanState.POINT_NOT_SELECTED,
             ScanState.POINT_SELECTED
         ]),
-        selectedPointName: PropTypes.string,
+        selectedPoint: PropTypes.string,
         judgeName: PropTypes.string,
         onPress: PropTypes.func,
         description: PropTypes.string
@@ -28,16 +28,16 @@ export const ContentView = props => {
     return <View>
         <SingleLineText
             text={`Вы зашли как: ${props.judgeName}`}
-            style={styles.textStyle}
+            style={styles.boldStyle}
         />
         {selectScanState({...props})}
     </View>
 }
 
-const selectScanState = ({scanState, pointName, description, onPress}) => {
+const selectScanState = ({scanState, selectedPoint, description, onPress}) => {
     switch (scanState) {
         case ScanState.POINT_SELECTED: {
-            return <EnableScanView pointName={pointName}/>
+            return <EnableScanView pointName={selectedPoint} onPress={onPress}/>
         }
         case ScanState.POINT_NOT_SELECTED: {
             return <SelectPointView onPress={onPress}/>
@@ -61,21 +61,30 @@ const DisabledScanView = props => {
 
 const EnableScanView = props => {
     EnableScanView.propTypes = {
-        pointName: PropTypes.string
+        pointName: PropTypes.string,
+        onPress: PropTypes.func
     }
     return <View>
         <SingleLineText
-            text={props.pointName}
+            text={`Ваш пункт: ${props.pointName}`}
             style={styles.textStyle}
         />
         <SingleLineText
             text={Strings.SCANING}
-            style={styles.textStyle}
+            style={styles.boldStyle}
         />
         <SingleLineText
             text={Strings.SCAN_TIP}
             style={styles.textStyle}
         />
+        <View style={styles.centredView}>
+            <TouchableOpacity
+                style={styles.buttonGreyStyle}
+                onPress={props.onPress}
+            >
+                <Text style={styles.buttonText}> Изменить пункт </Text>
+            </TouchableOpacity>
+        </View>
     </View>
 }
 

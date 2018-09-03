@@ -59,6 +59,7 @@ export class AuthScreen extends React.Component {
 
     render = () => {
         return <View style={styles.container}>
+            <Text> Включите интернет для авторизации </Text>
             <TextInput
                 style={styles.textInput}
                 blurOnSubmit={false}

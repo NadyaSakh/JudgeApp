@@ -4,7 +4,8 @@ import { ScreensKeys } from '../../ScreenKey'
 
 const defaultState = {
     screenState: ComponentState.CONTENT,
-    navigateTo: ''
+    navigateTo: '',
+    competitionExists: false
 }
 
 export const InitScreenReducer = (prevState = defaultState, action) => {
@@ -19,7 +20,8 @@ export const InitScreenReducer = (prevState = defaultState, action) => {
             return {
                 ...prevState,
                 screenState: ComponentState.CONTENT,
-                navigateTo: ScreensKeys.APP
+                navigateTo: ScreensKeys.APP,
+                competitionExists: action.payload.competitionExists
             }
         }
 
