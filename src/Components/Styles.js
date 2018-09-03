@@ -17,6 +17,12 @@ export const styles = StyleSheet.create({
         paddingBottom: 2,
         fontSize: 14
     },
+    boldStyle: {
+        paddingTop: 2,
+        paddingBottom: 4,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
     loadingStyle: {
         paddingTop: 2,
         paddingLeft: 10,
@@ -46,6 +52,12 @@ export const styles = StyleSheet.create({
         // borderWidth: 0.5,
         borderRadius: 10
     },
+    buttonGreyStyle: {
+        backgroundColor: '#bddaff',
+        borderRadius: 10,
+        marginTop: 10,
+        marginBottom: 10
+    },
     buttonText: {
         padding: 8,
         justifyContent: 'center',
@@ -57,5 +69,13 @@ export const styles = StyleSheet.create({
     centredView: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    buttonBorderStyle: {
+        marginTop: 10,
+        marginBottom: 10,
+        backgroundColor: '#2080ff',
+        borderColor: '#fff',
+        // borderWidth: 1,
+        borderRadius: 10
     }
 })

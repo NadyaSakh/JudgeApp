@@ -1,10 +1,11 @@
 import { ScanState } from './Constants'
 import { Actions } from './Actions'
+import { ComponentState } from '../../Components/ActionContainer'
 
 
 const defaultState = {
     scanState: ScanState.SCAN_DISABLE,
-    chosenPoint: null
+    chosenPoint: {}
 }
 
 export const ScanStoreReducer = (prevState = defaultState, action) => {
@@ -27,6 +28,26 @@ export const ScanStoreReducer = (prevState = defaultState, action) => {
                 chosenPoint: action.payload.chosenPoint
             }
         }
+        case Actions.SCANING: {
+            return {
+                ...prevState,
+                screenState: ComponentState.LOADING
+            }
+        }
+        // case Actions.SCANING_SUCCESS: {
+        //     return {
+        //         ...prevState,
+        //         screenState: ComponentState.CONTENT
+        //         // navigateTo: ScreensKeys.APP // Переход на экран о типе события
+        //     }
+        // }
+        //
+        // case Actions.SCANING_FAIL: {
+        //     return {
+        //         ...prevState,
+        //         screenState: ComponentState.ERROR
+        //     }
+        // }
         default: {
             return prevState
         }

@@ -10,22 +10,6 @@ export const Actions = {
     GETTING_FULL_NAME_SUCCESS: 'GETTING_FULL_NAME_SUCCESS'
 }
 
-// export const scanAction = () => ({
-//     type: Actions.SCANING
-// })
-//
-// export const scaningEpic = action$ =>
-//     action$.ofType(Actions.SCANING)
-//         .mergeMap(() => {
-//         })
-//
-// const scaningFail = () => ({
-//     type: Actions.SCANING_FAIL,
-//     payload: {
-//         error: 'Ошибка сканирования.'
-//     }
-// })
-
 export const getFullNameAction = () => ({
     type: Actions.GETTING_FULL_NAME
 })

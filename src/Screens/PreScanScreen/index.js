@@ -22,7 +22,7 @@ const mapDispatchToProps = dispatch => ({
 
 export class PreScanScreen extends React.Component {
     static navigationOptions = {
-        title: 'Предварительное сканирвоание',
+        title: 'Предварительное сканирование',
         headerStyle: {
             backgroundColor: '#2080ff'
         },
@@ -35,17 +35,21 @@ export class PreScanScreen extends React.Component {
     static propTypes = {
         componentState: PropTypes.string.isRequired,
         navigateTo: PropTypes.string,
-        sendTags: PropTypes.func
+        sendTags: PropTypes.func,
+        message: PropTypes.string
     }
 
     state = {
-        // supported: true,
         tags: []
+        // tags: [
+        //     'NFC_TG0011',
+        //     'NFC_TG0012',
+        //     'NFC_TG0013',
+        // ]
     }
 
     componentDidMount() {
         LOG('MOUNT_PreScanScreen', 'MOUNT')
-        // this.scanNFC()
     }
 
     scanNFC = () => {
@@ -70,14 +74,17 @@ export class PreScanScreen extends React.Component {
             LOG(tag, 'Tag Discovered:')
             LOG(tag.id, 'Id тега: ')
             LOG(this.state)
-            this.setState(prevState => ({
-                tags: [...prevState.tags, tag.id]
-            }))
+            if (!this.state.tags.includes(tag.id)) {
+                this.setState(prevState => ({
+                    tags: [...prevState.tags, tag.id]
+                }))
+            }
         }, 'Hold your device over the tag', true)
     }
 
     onSend = () => {
         this.props.sendTags(this.state.tags)
+        // "FD7CDEC0"
     }
 
     render = () => {
@@ -99,8 +106,9 @@ export class PreScanScreen extends React.Component {
                 componentState={this.props.componentState}
                 contentView={
                     <ContentView
-                        tag={this.state.tags}
+                        tags={this.state.tags}
                         onPress={this.onSend}
+                        message={this.props.message}
                     />
                 }
                 errorVisibility={false}

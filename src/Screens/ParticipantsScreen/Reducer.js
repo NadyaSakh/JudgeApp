@@ -3,31 +3,35 @@ import { ComponentState } from '../../Components/ActionContainer'
 
 const defaultState = {
     componentState: ComponentState.CONTENT,
-    message: ''
+    participantsList: null,
+    quantity: null
 }
 
-export const PreScanReducer = (prevState = defaultState, action) => {
+export const ParticipantsReducer = (prevState = defaultState, action) => {
     switch (action.type) {
-        case Actions.SHOW_SCAN: {
+        case Actions.SHOW_PARTICIPANTS: {
             return {
                 ...prevState,
                 componentState: ComponentState.CONTENT
             }
         }
-        case Actions.SEND_TAG_SUCCESS: {
+
+        case Actions.GET_PARTICIPANTS_SUCCESS: {
             return {
                 ...prevState,
-                componentState: ComponentState.CONTENT,
-                message: action.payload.message
+                screenState: ComponentState.CONTENT,
+                participantsList: action.payload.participantsList,
+                quantity: action.payload.quantity
             }
         }
-        case Actions.SEND_TAG_FAIL: {
+
+        case Actions.GET_PARTICIPANTS_FAIL: {
             return {
                 ...prevState,
-                componentState: ComponentState.CONTENT,
-                message: action.payload.message
+                screenState: ComponentState.ERROR
             }
         }
+
         default: {
             return prevState
         }

@@ -20,25 +20,32 @@ export const sendTagsAction = (tags) => ({
 export const sendTagEpic = action$ =>
     action$.ofType(Actions.SEND_TAG)
         .mergeMap(action => {
-            let urlString = 'https://my-json-server.typicode.com/NadyaSakh/Auth1/auth'
+            // let urlString = 'https://my-json-server.typicode.com/NadyaSakh/Auth1/auth'
+            let urlString = 'https://afternoon-woodland-86438.herokuapp.com/tags/create/array'
             return ajax.post(urlString, {'tags': action.payload.tags}, {'Content-Type': 'application/json'})
-        })
-        .mergeMap(() => {
-            LOG('NFC метки отправлены!')
-            return Observable.of(sendTagsSuccessAction())
-        })
-        .catch(error => {
-            LOG(error, 'sendTagEpic')
-            return Observable.of(sendTagsFail())
+            // .timeout(15000)
+                .mergeMap(() => {
+                    LOG('NFC метки отправлены!')
+                    return Observable.of(sendTagsSuccessAction())
+                })
+                .catch(error => {
+                    LOG(error, 'sendTagEpic')
+                    return Observable.of(sendTagsFail())
+                })
         })
 
+
 const sendTagsSuccessAction = () => ({
-    type: Actions.SEND_TAG_SUCCESS
+    type: Actions.SEND_TAG_SUCCESS,
+    payload: {
+        message: 'Метки отправлены'
+    }
 })
 
 const sendTagsFail = () => ({
     type: Actions.SEND_TAG_FAIL,
     payload: {
-        error: 'NFC метки не отправлены!'
+        error: 'NFC метки не отправлены!',
+        message: 'NFC метки не отправлены! Проверьте подключение к сети интернет.'
     }
 })

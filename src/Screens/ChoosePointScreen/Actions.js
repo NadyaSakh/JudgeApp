@@ -3,25 +3,12 @@ import { Observable } from 'rxjs/Rx'
 import { AsyncStorage } from 'react-native'
 
 export const Actions = {
-    CHOOSING: 'CHOOSING',
-    CHOOSING_SUCCESS: 'CHOOSING_SUCCESS',
-    CHOOSING_FAIL: 'CHOOSING_FAIL',
     GETTING_COMPETITION_NAME: 'GETTING_COMPETITION_NAME',
     GETTING_COMPETITION_NAME_SUCCESS: 'GETTING_COMPETITION_NAME_SUCCESS',
     GETTING_CURRENT_DAY_POINTS: 'GETTING_CURRENT_DAY_POINTS',
     GETTING_POINTS_SUCCESS: 'GETTING_POINTS_SUCCESS',
     GETTING_POINTS_ERROR: 'GETTING_POINTS_ERROR'
 }
-
-export const chooseAction = () => ({
-    type: Actions.CHOOSING
-})
-
-export const chooseEpic = action$ =>
-    action$.ofType(Actions.CHOOSING)
-        .mergeMap(() => {
-        })
-
 
 export const getCompNameAction = () => ({
     type: Actions.GETTING_COMPETITION_NAME
@@ -45,7 +32,6 @@ export const getPointsEpic = action$ =>
     action$.ofType(Actions.GETTING_CURRENT_DAY_POINTS)
         .mergeMap(() => {
             return requestDaysAndPoints()
-            // return getCompName()
         })
         .mergeMap(currentDayPoints => {
             LOG(currentDayPoints, 'Список пунктов текущего дня')
@@ -127,7 +113,6 @@ const getCurrentDayId = () => {
                     // найти айди текущего дня
                     let currDay = getCurrentDay()
                     parsedDays.forEach(day => {
-                        // const currDay = '2018-01-15'
                         if (day.date === currDay) {
                             currentDayId = day.id
                             LOG(currentDayId, 'Айди текущего дня:')

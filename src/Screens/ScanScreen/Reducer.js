@@ -8,28 +8,8 @@ const defaultState = {
     fullName: ''
 }
 
-export const ScanReducer = (prevState = defaultState, action) => {
+export const ScanScreenReducer = (prevState = defaultState, action) => {
     switch (action.type) {
-        case Actions.SCANING: {
-            return {
-                ...prevState,
-                screenState: ComponentState.LOADING
-            }
-        }
-        case Actions.SCANING_SUCCESS: {
-            return {
-                ...prevState,
-                screenState: ComponentState.CONTENT
-                // navigateTo: ScreensKeys.APP // Переход на экран о типе события
-            }
-        }
-
-        case Actions.SCANING_FAIL: {
-            return {
-                ...prevState,
-                screenState: ComponentState.ERROR
-            }
-        }
         case Actions.GETTING_FULL_NAME_SUCCESS: {
             return {
                 ...prevState,
@@ -37,12 +17,6 @@ export const ScanReducer = (prevState = defaultState, action) => {
                 fullName: action.payload.fullName
             }
         }
-        // case Actions.GETTING_FULL_NAME_FAIL: {
-        //     return {
-        //         ...prevState,
-        //         screenState: ComponentState.ERROR
-        //     }
-        // }
 
         default: {
             return prevState
