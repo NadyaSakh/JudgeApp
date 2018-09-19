@@ -10,7 +10,7 @@ import { NavigationEvents } from 'react-navigation'
 import { ActionContainer } from '../../Components/ActionContainer'
 import { ContentView } from './Components'
 import { LOG } from '../../Utils/logger'
-import NfcManager, { NdefParser } from 'react-native-nfc-manager'
+import NfcManager from 'react-native-nfc-manager'
 import { sendTagsAction } from './Actions'
 import { styles } from '../../Components/Styles'
 
@@ -41,11 +41,6 @@ export class PreScanScreen extends React.Component {
 
     state = {
         tags: []
-        // tags: [
-        //     'NFC_TG0011',
-        //     'NFC_TG0012',
-        //     'NFC_TG0013',
-        // ]
     }
 
     componentDidMount() {
@@ -66,7 +61,7 @@ export class PreScanScreen extends React.Component {
                 LOG('start OK', result)
             })
             .catch(error => {
-                LOG('device does not support nfc!')
+                LOG('device does not support nfc!', error)
                 this.setState({supported: false})
             })
         // let tagI = null
@@ -93,11 +88,11 @@ export class PreScanScreen extends React.Component {
         return <View style={styles.container}>
             <NavigationEvents
                 onDidFocus={payload => {
-                    console.log(' ps did focus', payload)
+                    LOG(' ps did focus', payload)
                     this.scanNFC()
                 }}
                 onWillBlur={payload => {
-                    console.log('ps will blur', payload)
+                    LOG('ps will blur', payload)
                     NfcManager.unregisterTagEvent()
                     NfcManager.stop()
                 }}

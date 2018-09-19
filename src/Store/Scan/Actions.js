@@ -137,11 +137,11 @@ const checkScanEnable = (dates, times) => {
     // let timeRes = (currentTime >=times.timeStart && currentTime <= times.timeFinish)
     //Пока так делаю, чтобы можно было сканирование делать,
     // Потом раскоментить предыдущую строку
-    let timeRes = (currentTime >= '09:00:00' && currentTime <= '22:00:00') // НАДО СДЕЛАТЬ, ЧТОБЫ ВСЕГДА БЫЛ НОЛЬ ПЕРЕД ЧАСОМ
+    let timeRes = (currentTime >= times.timeStart && currentTime <= '22:00:00') // НАДО СДЕЛАТЬ, ЧТОБЫ ВСЕГДА БЫЛ НОЛЬ ПЕРЕД ЧАСОМ
     let dayRes = (currentDate >= dates.compStartDate && currentDate <= '2018-09-20')
     let result = (dayRes && timeRes)
-    // LOG(dayRes, 'Сейчас можно сканировать?1')
-    // LOG(timeRes, 'Сейчас можно сканировать?')
+    LOG(dayRes, 'Сейчас можно сканировать?1')
+    LOG(timeRes, 'Сейчас можно сканировать?')
     return result
 }
 
@@ -163,7 +163,7 @@ const getCurrentDay = () => {
 
     dateString += newDate.getFullYear() + '-'
     dateString += `0${newDate.getMonth() + 1}`.slice(-2) + '-'
-    dateString += newDate.getDate()
+    dateString += `0${newDate.getDate()}`.slice(-2)
     return dateString
 }
 
