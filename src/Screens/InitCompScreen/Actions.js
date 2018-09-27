@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/observable/dom/ajax'
 import { LOG } from '../../Utils/logger'
@@ -19,8 +20,8 @@ export const requestCompetitionEpic = action$ =>
     action$.ofType(Actions.REQUEST_COMPETITION)
         .mergeMap(() => {
             // Получение текущего соревнования:
-            // return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/current')
-            return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/1')
+            return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/current')
+            // return ajax.getJSON('https://afternoon-woodland-86438.herokuapp.com/competitions/1')
             // return ajax.getJSON('http://my-json-server.typicode.com/NadyaSakh/Weather-app1/currentCompetition/')
 
                 .timeout(5000)

@@ -35,5 +35,14 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rules": {
+    "linebreak-style": 0,
+    "global-requre": 0,
+    "eslint linebreak-style": [
+      0,
+      "error",
+      "windows"
+    ]
   }
 }

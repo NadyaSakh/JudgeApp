@@ -36,7 +36,7 @@ export const TagsList = props => {
             return (
                 <ListItem
                     style={props.style}
-                    tag={item}
+                    tag={item.uuid}
                 />
             )
         }}

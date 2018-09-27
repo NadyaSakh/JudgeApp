@@ -23,6 +23,13 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold'
     },
+    greenStyle: {
+        paddingTop: 2,
+        paddingBottom: 4,
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'green'
+    },
     loadingStyle: {
         paddingTop: 2,
         paddingLeft: 10,

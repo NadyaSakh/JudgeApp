@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 
 import { ActionContainer } from '../../Components/ActionContainer'
 import { ContentView, LoadingView } from './Components'
@@ -9,6 +9,7 @@ import { ErrorView } from '../../Components/ScreenError'
 import { styles } from '../../Components/Styles'
 import { LOG } from '../../Utils/logger'
 import { getParticipantInfoAction, saveEventAction } from './Actions'
+import { getCurrentDay, getTime } from '../../Utils/tools'
 
 const mapDispatchToProps = dispatch => ({
     getParticipantsInfo: tagId => dispatch(getParticipantInfoAction(tagId)),
@@ -21,7 +22,7 @@ const mapStateToProps = state => ({
 
 export class ScanTypeScreen extends React.Component {
     static navigationOptions = {
-        title: 'Выбор типа события',
+        title: 'Новое событие',
         headerStyle: {
             backgroundColor: '#2080ff'
         },
@@ -41,25 +42,40 @@ export class ScanTypeScreen extends React.Component {
             vehicleType: PropTypes.string,
             racingMastery: PropTypes.string
         }),
+        message: PropTypes.string,
         getParticipantsInfo: PropTypes.func,
         saveEvent: PropTypes.func
     }
 
     state = {
-        eventType: ''
+        participant:
+            {
+                id: 1,
+                name: 'Алексей',
+                surname: 'Алехин',
+                fatherName: 'Генадьевич',
+                vehicleType: 'мотоцикл',
+                racingMastery: 'проффи'
+            }
     }
 
     componentDidMount() {
         LOG('MOUNT_ScanTypeScreen', 'MOUNT')
         // const tagId = this.props.navigation.getParam('tagId', 'NO-ID')
         // const parsedTagId = JSON.stringify(tagId)
-        this.getParticipantsInfo(11) //parsedTagId
+        // this.getParticipantsInfo(1) //parsedTagId
     }
 
     constructor(props) {
         super(props)
-    }
+        const tagId = this.props.navigation.getParam('tagId', 'NO-ID')
+        // const parsedTagId = JSON.stringify(tagId)
 
+        const pointId = this.props.navigation.getParam('pointId', 'NO-ID')
+        // const parsedPointId = JSON.stringify(pointId)
+
+        this.onSave(tagId, pointId)
+    }
 
     // получить имя участника и его инфу по метке
     getParticipantsInfo = (tagId) => {
@@ -71,49 +87,41 @@ export class ScanTypeScreen extends React.Component {
         this.props.saveEvent(data)
     }
 
-    // приезд
-    onArrivalPress = () => {
-        LOG(this.state, 'СТЕЙТ')   //  Выводит почему то старый стейт?
-        this.setState({eventType: 'arrival'}) // НЕ ПОЛУЧАЕТСЯ В МАССИВ ЗАПИСАТТЬ В СТЕЙТЕ?
-    }
-    // отъезд
-    onDeparturePress = () => {
-        LOG(this.state, 'СТЕЙТ')
-        this.setState({eventType: 'departure'})
-    }
-
-    onCancelPress = () => {
-        //отменить выбранный тип события
-        LOG(this.state, 'СТЕЙТ')
-        this.setState({eventType: ''})
-    }
-
-    onSavePress = data => {
+    onSave = (parsedTagId, parsedPointId) => {
         // сохранить и выйти назад
-        this.onSaveEvent(data)
+        LOG('Сохранение')
+        // eventId = eventId + 1
+        let currentTime = getTime()
+        // let currentDate = getCurrentDay()
+
+        let event = {
+            // eventId: eventId,
+            tagId: parsedTagId,
+            // participantId: props.participantInfo.id,
+            dateTime: currentTime,
+            // dateTime: currentDate,
+            pointId: parsedPointId,
+            sendStatus: 'NOT_SENDED'
+        }
+
+        LOG(event, 'СОБЫТИЕ: ')
+        this.onSaveEvent(event)
         // this.props.navigation.goBack()
     }
 
     render = () => {
         const tagId = this.props.navigation.getParam('tagId', 'NO-ID')
-        const parsedTagId = JSON.stringify(tagId)
-
-        const pointId = this.props.navigation.getParam('pointId', 'NO-ID')
-        const parsedPointId = JSON.stringify(pointId)
 
         return <View style={styles.container}>
             <ActionContainer
                 componentState={this.props.componentState}
                 contentView={
                     <ContentView
-                        tag={parsedTagId}
-                        pointId={parsedPointId}
-                        participantInfo={this.props.participant}
-                        onArrivalPress={this.onArrivalPress}
-                        onDeparturePress={this.onDeparturePress}
-                        onCancelPress={this.onCancelPress}
-                        onSavePress={this.onSavePress}
-                        eventType={this.state.eventType} //БУДЕТ ЛИ ПЕРЕДАВАТЬ СВЕЖИЙ СТЕЙТ?
+                        tag={tagId}
+                        message={this.props.message}
+                        // participantInfo={this.props.participant}
+                        participantInfo={this.state.participant}
+
                     />
                 }
                 errorVisibility={false}

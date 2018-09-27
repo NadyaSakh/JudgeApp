@@ -77,8 +77,29 @@ export class ChoosePointScreen extends React.Component {
         return dateString
     }
 
+    // стейт для пунктов
+    state = {
+        pointsList: [
+            {
+                id: 1,
+                name: 'Старт'
+            },
+            {
+                id: 2,
+                name: 'Заправка-1'
+            },
+            {
+                id: 3,
+                name: 'Заправка-2'
+            },
+            {
+                id: 4,
+                name: 'Финиш'
+            }
+        ]
+    }
+
     // Исправить ошибки в компонентах:
-    // В key extractor
     // isMounted
     render = () => {
         return <View style={styles.container}>
@@ -87,7 +108,8 @@ export class ChoosePointScreen extends React.Component {
                 contentView={
                     <ContentView
                         competitionName={this.props.competitionName}
-                        points={this.props.currentPoints}
+                        // points={this.props.currentPoints}
+                        points={this.state.pointsList}
                         day={this.getDay()}
                         onPress={this.onPointPress}
                         isChecked={false}

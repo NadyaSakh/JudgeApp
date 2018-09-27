@@ -2,8 +2,10 @@ import { Actions } from './Actions'
 import { ComponentState } from '../../Components/ActionContainer'
 
 const defaultState = {
-    componentState: ComponentState.LOADING,
-    participant: null
+    // componentState: ComponentState.LOADING,
+    componentState: ComponentState.CONTENT,
+    participant: null,
+    message: ''
 }
 
 export const ScanTypeReducer = (prevState = defaultState, action) => {
@@ -25,6 +27,13 @@ export const ScanTypeReducer = (prevState = defaultState, action) => {
             return {
                 ...prevState,
                 componentState: ComponentState.ERROR
+            }
+        }
+        case Actions.SAVE_EVENT_SUCCESS: {
+            return {
+                ...prevState,
+                componentState: ComponentState.CONTENT,
+                message: 'Событие успешно сохранено'
             }
         }
         default: {

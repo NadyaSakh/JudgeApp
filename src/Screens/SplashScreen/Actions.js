@@ -27,11 +27,11 @@ export const checkAuthEpic = action$ =>
         ))
         .map(data => {
             let nextAction = ''
-            if (data.tokenExist === null) {
+            if (data.tokenExist === false) {
                 LOG('АВТОРИЗАЦИЯ')
                 nextAction = Actions.NAVIGATE_TO_AUTH
             }
-            else if (data.tokenExist && data.dataExist === null) {
+            else if (data.tokenExist && data.dataExist === false) {
                 LOG('ИНИЦИАЛИЗАЦИЯ')
                 nextAction = Actions.NAVIGATE_TO_INIT
             } else {

@@ -40,6 +40,7 @@ export class PreScanScreen extends React.Component {
     }
 
     state = {
+        internalTags: [],
         tags: []
     }
 
@@ -69,9 +70,10 @@ export class PreScanScreen extends React.Component {
             LOG(tag, 'Tag Discovered:')
             LOG(tag.id, 'Id тега: ')
             LOG(this.state)
-            if (!this.state.tags.includes(tag.id)) {
+            if (!this.state.internalTags.includes(tag.id)) {
                 this.setState(prevState => ({
-                    tags: [...prevState.tags, tag.id]
+                    internalTags: [...prevState.tags, tag.id],
+                    tags: [...prevState.tags, {uuid: tag.id}]
                 }))
             }
         }, 'Hold your device over the tag', true)

@@ -79,10 +79,9 @@ export class ScanCompetition extends React.Component {
             //id: "FD7CDEC0"
             this.setState({tag: tag.id})
             //Перейти на экран выбора типа события
-            this.props.navigation.navigate(ScreensKeys.SCAN_TYPE_SCREEN, {
-                tagId: tag.id,
-                pointId: this.props.chosenPoint.id
-            })
+            LOG({tagId: tag.id, pointId: this.props.chosenPoint.id}, 'ПО УЧАСТНИКУ')
+            this.props.navigation.navigate(ScreensKeys.SCAN_TYPE_SCREEN,
+                {tagId: tag.id, pointId: this.props.chosenPoint.id})
         }, 'Hold your device over the tag', true)
     }
 

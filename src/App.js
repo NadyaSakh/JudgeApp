@@ -5,7 +5,7 @@ import {
     createBottomTabNavigator
 } from 'react-navigation'
 import { Provider } from 'react-redux'
-import { Text } from 'react-native'
+
 
 import { store } from './Store'
 import CurrentCompetition from './Screens/InitCompScreen'
@@ -42,8 +42,9 @@ export const MenuStack = createStackNavigator({
 export const TabNavigator = createBottomTabNavigator(
     {
         Scan: AppStack,
-        Events: EventsStack,
-        Participants: ParticipantsStack,
+        // пока для съемки убираем
+        // Events: EventsStack,
+        // Participants: ParticipantsStack,
         Menu: MenuStack
     },
     {

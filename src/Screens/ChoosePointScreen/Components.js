@@ -105,13 +105,13 @@ export const ContentView = props => {
             onPress={props.onPress}
             style={styles.item}
         />
-        <View style={styles.centredView}>
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={props.onChange}
-            >
-                <Text style={styles.buttonText}> Изменить пункт </Text>
-            </TouchableOpacity>
-        </View>
+        {/*<View style={styles.centredView}>*/}
+        {/*<TouchableOpacity*/}
+        {/*style={styles.buttonStyle}*/}
+        {/*onPress={props.onChange}*/}
+        {/*>*/}
+        {/*<Text style={styles.buttonText}> Изменить пункт </Text>*/}
+        {/*</TouchableOpacity>*/}
+        {/*</View>*/}
     </View>
 }
